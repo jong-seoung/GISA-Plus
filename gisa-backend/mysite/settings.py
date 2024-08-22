@@ -43,6 +43,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+third_apps = ["rest_framework","corsheaders"]
+
 local_apps = ["accounts"]
 
 INSTALLED_APPS = [
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    *third_apps,
     *local_apps,
 ]
 
@@ -59,6 +62,7 @@ if DEBUG:
     INSTALLED_APPS += ["debug_toolbar"]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -152,3 +156,8 @@ INTERNAL_IPS = env.list("INTERNAL_IPS", default=["127.0.0.1"])
 # accounts 앱 LoginView/LogoutView의 success_url_allowed_hosts 속성에서 사용할 호스트 목록
 #  - ex) "localhost:3000"
 SUCCESS_URL_ALLOWED_HOSTS = set(env.list("SUCCESS_URL_ALLOWED_HOSTS", default=set()))
+
+# CORS
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+CORS_ALLOW_CREDENTIALS = env.bool("CORS_ALLOW_CREDENTIALS", default=False)
+SESSION_COOKIE_DOMAIN = env.str("SESSION_COOKIE_DOMAIN", default=None) or None
