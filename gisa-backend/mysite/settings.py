@@ -43,6 +43,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+local_apps = ["accounts"]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    *local_apps,
 ]
 
 if DEBUG:
@@ -114,6 +117,8 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# Custom User Model
+AUTH_USER_MODEL = "accounts.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -141,3 +146,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html
 
 INTERNAL_IPS = env.list("INTERNAL_IPS", default=["127.0.0.1"])
+
+# auth LoginView/LogoutView
+
+# accounts 앱 LoginView/LogoutView의 success_url_allowed_hosts 속성에서 사용할 호스트 목록
+#  - ex) "localhost:3000"
+SUCCESS_URL_ALLOWED_HOSTS = set(env.list("SUCCESS_URL_ALLOWED_HOSTS", default=set()))
