@@ -3,6 +3,7 @@ import { Container } from "react-bootstrap";
 
 import TopNav from "./components/TopNav";
 import { StatusProvider } from "./contexts/StatusContext";
+import Login from "./components/login/Login";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,9 @@ const router = createBrowserRouter([
         </Container>
       </>
     ),
+    children: [
+      { path: "login", element: <Login />}
+    ]
   },
 ]);
 
