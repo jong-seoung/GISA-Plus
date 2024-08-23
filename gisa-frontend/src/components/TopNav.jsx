@@ -1,9 +1,9 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Alert, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 
 import { useApiAxios } from "../api";
-import { LOGOUT_URL, PROFILE_URL, SIGNUP_URL } from "../constants";
-import { StatusProvider, useStatusContext } from "../contexts/StatusContext";
+import { LOGOUT_URL } from "../constants";
+import { useStatusContext } from "../contexts/StatusContext";
 
 // Alert 컴포넌트의 variant 속성
 //  - https://react-bootstrap.github.io/docs/components/alerts/#alert
@@ -54,10 +54,10 @@ function TopNav() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto" variant="underline">
               <Nav.Link to="/blog" as={NavLink}>
-                기출
+                랜덤 문제
               </Nav.Link>
               <Nav.Link to="/about" as={NavLink}>
-                가나다
+                저장된 문제
               </Nav.Link>
               {is_authenticated !== null && (
                 <NavDropdown
@@ -69,14 +69,14 @@ function TopNav() {
                       <NavDropdown.Item to="/login" as={NavLink}>
                         로그인
                       </NavDropdown.Item>
-                      <NavDropdown.Item to={SIGNUP_URL} as={NavLink}>
+                      <NavDropdown.Item to="/signup" as={NavLink}>
                         회원가입
                       </NavDropdown.Item>
                     </>
                   )}
                   {is_authenticated && (
                     <>
-                      <NavDropdown.Item to={PROFILE_URL} as={NavLink}>
+                      <NavDropdown.Item to="/profile" as={NavLink}>
                         프로필
                       </NavDropdown.Item>
                       <NavDropdown.Divider />

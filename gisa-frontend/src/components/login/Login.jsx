@@ -1,43 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Container, Alert } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Form, Button, Container, Alert } from "react-bootstrap";
+
 import { useApiAxios } from "../../api";
+import { useStatusContext } from "../../contexts/StatusContext";
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [errorMessage, setErrorMessage] = useState('');
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const is_authenticated = useStatusContext();
+  const navigate = useNavigate();
 
   // useApiAxios 훅 사용
   const [{ response, error, loading }, executeLogin] = useApiAxios(
     {
-      url: '/accounts/login/',
-      method: 'POST',
+      url: "/accounts/login/",
+      method: "POST",
     },
     { manual: true } // 수동으로 요청 실행하기 위해 manual: true 설정
   );
 
   // 폼 변경 핸들러
-  const handleChange = (e) => {
+  const handleChange = e => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  // 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
     executeLogin({ data: formData });
   };
 
-  // 로그인 성공 시 홈 페이지로 이동
   useEffect(() => {
     if (response && response.status === 200) {
         window.location.href = '/'
     }
   }, [response]);
 
+  useEffect(() => {
+    if (is_authenticated === true) {
+      navigate("/");
+    }
+  }, [is_authenticated, navigate]);
+
   return (
-    <Container className="mt-5" style={{ maxWidth: '400px' }}>
+    <Container className="mt-5" style={{ maxWidth: "400px" }}>
       <h2 className="text-center">로그인</h2>
       {error && (
         <Alert variant="danger">
@@ -67,8 +75,14 @@ const LoginPage = () => {
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit" className="mt-3" block disabled={loading}>
-          {loading ? '로그인 중...' : '로그인'}
+        <Button
+          variant="primary"
+          type="submit"
+          className="mt-3"
+          block
+          disabled={loading}
+        >
+          {loading ? "로그인 중..." : "로그인"}
         </Button>
       </Form>
     </Container>
