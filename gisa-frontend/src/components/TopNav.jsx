@@ -1,7 +1,8 @@
 import { NavLink } from "react-router-dom";
-
 import { Alert, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { LOGIN_URL, LOGOUT_URL, PROFILE_URL, SIGNUP_URL } from "../constants";
+
+import { useApiAxios } from "../api";
+import { LOGOUT_URL } from "../constants";
 import { useStatusContext } from "../contexts/StatusContext";
 
 // Alert 컴포넌트의 variant 속성
@@ -21,6 +22,27 @@ function TopNav() {
     messages = [],
   } = useStatusContext();
 
+  const [{ loading, error }, executeLogout] = useApiAxios(
+    {
+      url: LOGOUT_URL,
+      method: "POST",
+    },
+    { manual: true } // 요청을 수동으로 실행하기 위해 manual: true 설정
+  );
+
+  const handleLogout = async () => {
+    try {
+      const response = await executeLogout(); // 로그아웃 POST 요청 전송
+      if (response?.status === 200) {
+        window.location.href = '/'
+      } else {
+        console.error("로그아웃 실패:", response);
+      }
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+    }
+  };
+
   return (
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -32,36 +54,33 @@ function TopNav() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto" variant="underline">
               <Nav.Link to="/blog" as={NavLink}>
-                기출
+                랜덤 문제
               </Nav.Link>
               <Nav.Link to="/about" as={NavLink}>
-                가나다
+                저장된 문제
               </Nav.Link>
               {is_authenticated !== null && (
-                <NavDropdown title="계정" id="basic-nav-dropdown">
+                <NavDropdown
+                  title={is_authenticated ? `${username}의 계정` : "계정"}
+                  id="basic-nav-dropdown"
+                >
                   {!is_authenticated && (
                     <>
-                      <NavDropdown.Item
-                        to={`${LOGIN_URL}?next=${window.location.href}`}
-                        as={NavLink}
-                      >
+                      <NavDropdown.Item to="/login" as={NavLink}>
                         로그인
                       </NavDropdown.Item>
-                      <NavDropdown.Item to={SIGNUP_URL} as={NavLink}>
+                      <NavDropdown.Item to="/signup" as={NavLink}>
                         회원가입
                       </NavDropdown.Item>
                     </>
                   )}
                   {is_authenticated && (
                     <>
-                      <NavDropdown.Item to={PROFILE_URL} as={NavLink}>
+                      <NavDropdown.Item to="/profile" as={NavLink}>
                         프로필
                       </NavDropdown.Item>
                       <NavDropdown.Divider />
-                      <NavDropdown.Item
-                        to={`${LOGOUT_URL}?next=${window.location.href}`}
-                        as={NavLink}
-                      >
+                      <NavDropdown.Item onClick={handleLogout}>
                         로그아웃
                       </NavDropdown.Item>
                     </>
