@@ -149,7 +149,7 @@ STATIC_ROOT = env.str("STATIC_ROOT", default=BASE_DIR / "staticfiles")
 
 MEDIA_URL = env.str("MEDIA_URL", default="media/")
 
-MEDIA_ROOT = env.str("MEDIA_ROOT", default=BASE_DIR / "media")
+MEDIA_ROOT = env.str("MEDIA_ROOT", default=BASE_DIR / "mediafiles")
 
 
 # Default primary key field type
