@@ -20,13 +20,30 @@ class Category(models.Model):
         return f"{self.name} - {self.version}"
 
 
+class Unit(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_unit")
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return f"{self.category.name} - {self.name}"
+
+
 class Quiz(TimeStampedModel):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category")
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="unit")
 
     def __str__(self):
         return self.title
+
+
+class Answer(models.Model):
+    num = models.SmallIntegerField()
+    name = models.CharField(max_length=100, unique=True)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"quiz:{self.quiz.id} - {self.num}:{self.name}"
 
 
 def uuid_name_upload_to(instance: models.Model, filename: str) -> str:

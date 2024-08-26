@@ -3,6 +3,7 @@ from quiz.models import Category, Quiz
 from quiz.serializers import CategoryListSerializer, QuizDetailSerializer, QuizListSerializer, QuizSerializer
 from rest_framework import generics
 from rest_framework.mixins import ListModelMixin
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 
@@ -31,3 +32,20 @@ class QuizModelViewSet(ActionBasedViewSetMixin, ModelViewSet):
         "update": QuizSerializer,
         "partial_update": QuizSerializer,
     }
+
+    def retrieve(self, request, *args, **kwargs):
+        id = kwargs.get("pk")
+
+        # 데이터베이스에서 직접 랜덤 퀴즈를 선택 (PostgreSQL의 경우)
+        other_quizzes = (
+            Quiz.objects.filter()
+            .exclude(id=id)
+            .order_by("?")
+            .select_related("unit")
+            .prefetch_related("photo_set")
+            .first()
+        )
+
+        random_quiz_data = self.get_serializer(other_quizzes).data
+
+        return Response(random_quiz_data)

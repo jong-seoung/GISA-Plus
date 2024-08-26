@@ -1,4 +1,4 @@
-from quiz.models import Category, Photo, Quiz
+from quiz.models import Answer, Category, Photo, Quiz, Unit
 from rest_framework import serializers
 
 
@@ -14,6 +14,20 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class UnitSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+
+    class Meta:
+        model = Unit
+        fields = ["name", "category"]
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = "__all__"
+
+
 class QuizImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
@@ -21,9 +35,11 @@ class QuizImageSerializer(serializers.ModelSerializer):
 
 
 class QuizSerializer(serializers.ModelSerializer):
+    unit = UnitSerializer()
+
     class Meta:
         model = Quiz
-        fields = ["id", "title", "content"]
+        fields = ["id", "unit", "title", "content"]
 
     @staticmethod
     def get_optimized_queryset():
@@ -41,13 +57,14 @@ class QuizListSerializer(serializers.ModelSerializer):
 
 
 class QuizDetailSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
+    unit = UnitSerializer()
+    answer = AnswerSerializer(source="answer_set", many=True)
     image_list = QuizImageSerializer(source="photo_set", many=True)
 
     class Meta:
         model = Quiz
-        fields = ["id", "category", "image_list", "title", "content"]
+        fields = ["id", "unit", "image_list", "title", "content", "answer"]
 
     @staticmethod
     def get_optimized_queryset():
-        return Quiz.objects.all().select_related("category").prefetch_related("photo_set")
+        return Quiz.objects.all().select_related("unit").prefetch_related("photo_set")
