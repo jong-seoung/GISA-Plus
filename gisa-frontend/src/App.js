@@ -3,6 +3,7 @@ import { Container } from "react-bootstrap";
 
 import TopNav from "./components/TopNav";
 import CategoryList from "./components/CategoryList"
+import CategoryDetail from "./components/CategoryDetail";
 import { StatusProvider } from "./contexts/StatusContext";
 import Login from "./components/login/Login";
 import Signup from "./components/login/Signup";
@@ -15,14 +16,14 @@ const router = createBrowserRouter([
         <TopNav />
         <Container>
           <Outlet />
-          <hr />
-          <CategoryList />
         </Container>
       </>
     ),
     children: [
+      { path: "", element: <CategoryList /> },
       { path: "login", element: <Login /> },
-      { path: "signup", element: <Signup />}
+      { path: "signup", element: <Signup />},
+      { path: "/:categoryName", element: <CategoryDetail /> },
     ],
   },
 ]);
