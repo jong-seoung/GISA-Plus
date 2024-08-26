@@ -1,5 +1,6 @@
+import { NavLink, useParams } from "react-router-dom";
+
 import React from "react";
-import { useParams } from "react-router-dom";
 import { Container, Card, Row, Col, Button } from "react-bootstrap";
 
 function CategoryDetail() {
@@ -10,7 +11,6 @@ function CategoryDetail() {
       <h1>{categoryName}</h1> {/* 카테고리 이름을 출력 */}
       <p>이 페이지는 {categoryName}에 대한 상세 정보입니다.</p>
       <Row className="mt-4">
-
         {/* 이론 섹션 */}
         <Col md={3}>
           <Card className="mb-4">
@@ -39,7 +39,9 @@ function CategoryDetail() {
             <Card.Body>
               <Card.Title>데일리 문제</Card.Title>
               <Card.Text>매일 새로운 문제로 실력을 쌓으세요.</Card.Text>
-              <Button variant="primary">데일리 문제 풀기</Button>
+              <NavLink to="daily">
+                <Button variant="primary">데일리 문제 풀기</Button>
+              </NavLink>
             </Card.Body>
           </Card>
         </Col>
