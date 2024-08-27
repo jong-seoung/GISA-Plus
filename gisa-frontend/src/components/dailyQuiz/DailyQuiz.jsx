@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useApiAxios } from "../../api";
+import { useApiAxios, makeRestApi } from "../../api";
 import { useParams } from "react-router-dom";
 import {
   Container,
@@ -12,10 +12,13 @@ import {
 } from "react-bootstrap";
 import styles from "./DailyQuiz.module.css"; // 모듈 CSS 임포트
 
+const SAVE_REST_API = makeRestApi("quiz/api/save/");
+
 function DailyQuiz() {
   const { categoryName } = useParams();
-  const [{ data: origQuiz = undefined, loading }, refetch] =
-    useApiAxios(`/quiz/api/post/0?categoryName=${categoryName}`);
+  const [{ data: origQuiz = undefined, loading }, refetch] = useApiAxios(
+    `quiz/api/post/0?categoryName=${categoryName}`
+  );
   const [quiz, setQuiz] = useState([]);
   const [showAnswers, setShowAnswers] = useState(false);
 
@@ -28,9 +31,32 @@ function DailyQuiz() {
     setShowAnswers(true);
   };
 
+  const handleSave = async ({ quiz }) => {
+    const { data, error } = await SAVE_REST_API.create({ id: quiz.id });
+    if (data) {
+      setQuiz(prev => ({
+        ...prev,
+        is_saved: data.is_saved,
+      }));
+      console.log(data);
+    }
+  };
+
+  const handleCancleSave = async ({ quiz }) => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      const { data, response } = await SAVE_REST_API.delete(quiz.id);
+      if (response?.status === 204) {
+        setQuiz(prev => ({
+          ...prev,
+          is_saved: data.is_saved,
+        }));
+      }
+    }
+  };
+
   const handleNextPage = () => {
     refetch({
-      url: `/quiz/api/post/${quiz.id}?categoryName=${categoryName}`,
+      url: `quiz/api/post/${quiz.id}?categoryName=${categoryName}`,
       method: "GET",
     });
   };
@@ -99,13 +125,28 @@ function DailyQuiz() {
                       </InputGroup>
                     </Row>
 
-                    <Row className="text-center mt-3">
-                      <Button
-                        variant={showAnswers ? "success" : "primary"}
-                        onClick={handleShowAnswers}
-                      >
-                        {showAnswers ? "저장" : "정답 보기"}
-                      </Button>
+                    <Row key={quiz.id} className="text-center mt-3">
+                      {showAnswers ? (
+                        quiz.is_saved ? (
+                          <Button
+                            variant="danger"
+                            onClick={() => handleCancleSave({ quiz })} // 함수 호출을 방지하고 이벤트 발생 시에만 실행
+                          >
+                            저장 취소
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="primary"
+                            onClick={() => handleSave({ quiz })} // 함수 호출을 방지하고 이벤트 발생 시에만 실행
+                          >
+                            저장
+                          </Button>
+                        )
+                      ) : (
+                        <Button variant="success" onClick={handleShowAnswers}>
+                          정답 보기
+                        </Button>
+                      )}
                     </Row>
                   </Row>
                 </Col>

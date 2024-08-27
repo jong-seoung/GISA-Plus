@@ -1,9 +1,10 @@
 from django.urls import include, path
-from quiz.views import CategoryList, QuizModelViewSet
+from quiz.views import CategoryList, QuizModelViewSet, QuizSaveViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(prefix="post", viewset=QuizModelViewSet)
+router.register(prefix="save", viewset=QuizSaveViewSet, basename="quiz-save")
 
 
 urlpatterns = [path("category-list", CategoryList.as_view(), name="카테고리 목록")]

@@ -1,4 +1,4 @@
-from quiz.models import Answer, Category, Photo, Quiz, Unit
+from quiz.models import Answer, Category, Photo, Quiz, QuizSave, Unit
 from rest_framework import serializers
 
 
@@ -68,3 +68,10 @@ class QuizDetailSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_optimized_queryset():
         return Quiz.objects.all().select_related("unit").prefetch_related("photo_set")
+
+
+class QuizSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizSave
+        fields = ["id", "user", "quiz", "saved_at"]
+        read_only_fields = ["saved_at"]

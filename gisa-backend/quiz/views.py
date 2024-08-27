@@ -1,10 +1,16 @@
 from core.mixins import ActionBasedViewSetMixin
-from quiz.models import Category, Quiz
-from quiz.serializers import CategoryListSerializer, QuizDetailSerializer, QuizListSerializer, QuizSerializer
-from rest_framework import generics
+from quiz.models import Category, Quiz, QuizSave
+from quiz.serializers import (
+    CategoryListSerializer,
+    QuizDetailSerializer,
+    QuizListSerializer,
+    QuizSaveSerializer,
+    QuizSerializer,
+)
+from rest_framework import generics, status, viewsets
 from rest_framework.mixins import ListModelMixin
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
 
 class CategoryList(generics.GenericAPIView, ListModelMixin):
@@ -15,7 +21,7 @@ class CategoryList(generics.GenericAPIView, ListModelMixin):
         return self.list(request, *args, **kwargs)
 
 
-class QuizModelViewSet(ActionBasedViewSetMixin, ModelViewSet):
+class QuizModelViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     queryset_map = {
         "list": QuizListSerializer.get_optimized_queryset(),
@@ -34,6 +40,7 @@ class QuizModelViewSet(ActionBasedViewSetMixin, ModelViewSet):
     }
 
     def retrieve(self, request, *args, **kwargs):
+        user = request.user
         id = kwargs.get("pk")
         category_name = request.query_params.get("categoryName")  # URL 쿼리 매개변수에서 categoryName 가져오기
 
@@ -47,6 +54,47 @@ class QuizModelViewSet(ActionBasedViewSetMixin, ModelViewSet):
             .first()
         )
 
-        random_quiz_data = self.get_serializer(other_quizzes).data
+        # 쿼리 결과가 없을 경우 처리
+        if other_quizzes is None:
+            return Response({"detail": "퀴즈가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
-        return Response(random_quiz_data)
+        try:
+            # 퀴즈 정보 직렬화
+            random_quiz_data = self.get_serializer(other_quizzes).data
+
+            # 해당 퀴즈가 저장되었는지 확인
+            is_saved = QuizSave.objects.filter(user=user, quiz_id=random_quiz_data["id"]).exists()
+            random_quiz_data["is_saved"] = is_saved
+
+            return Response(random_quiz_data)
+        except Exception as e:
+            # 구체적인 예외 로그 추가 가능
+            print(f"Error serializing quiz: {str(e)}")
+            return Response({"error": "데이터 처리 중 문제가 발생했습니다."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class QuizSaveViewSet(viewsets.ModelViewSet):
+    queryset = QuizSave.objects.all()
+    serializer_class = QuizSaveSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        quiz_id = request.data.get("id")
+        user = request.user
+
+        if QuizSave.objects.filter(user=user, quiz_id=quiz_id).exists():
+            return Response({"detail": "Quiz already saved."}, status=status.HTTP_400_BAD_REQUEST)
+
+        QuizSave.objects.create(user=user, quiz_id=quiz_id)
+        return Response({"is_saved": True}, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        quiz_id = kwargs.get("pk")
+        user = request.user
+
+        try:
+            quiz_save = QuizSave.objects.get(user=user, quiz_id=quiz_id)
+            quiz_save.delete()
+            return Response({"detail": "Quiz unsaved."}, status=status.HTTP_204_NO_CONTENT)
+        except QuizSave.DoesNotExist:
+            return Response({"detail": "Quiz not found in saved list."}, status=status.HTTP_404_NOT_FOUND)

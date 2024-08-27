@@ -2,6 +2,7 @@ from os.path import splitext
 from typing import List
 from uuid import uuid4
 
+from accounts.models import User
 from core.models import TimeStampedModel
 from django.core.files import File
 from django.core.files.base import ContentFile
@@ -44,6 +45,18 @@ class Answer(models.Model):
 
     def __str__(self):
         return f"quiz:{self.quiz.id} - {self.num}:{self.name}"
+
+
+class QuizSave(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="saved_quizzes")
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="saves")
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "quiz")
+
+    def __str__(self):
+        return f"{self.user.username} saved {self.quiz.title}"
 
 
 def uuid_name_upload_to(instance: models.Model, filename: str) -> str:

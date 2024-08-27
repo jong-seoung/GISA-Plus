@@ -12,9 +12,9 @@ const axiosInstance = Axios.create({
   baseURL: API_HOST,
   timeout: API_TIMEOUT,
   withCredentials: API_WITH_CREDENTIALS,
-  // headers: {
-  //   "Content-Type": "application/json",
-  // },
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 axiosInstance.interceptors.request.use((config) => {
