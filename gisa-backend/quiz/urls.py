@@ -1,0 +1,15 @@
+from django.urls import include, path
+from quiz.views import CategoryList, QuizModelViewSet, QuizSaveViewSet
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(prefix="post", viewset=QuizModelViewSet)
+router.register(prefix="save", viewset=QuizSaveViewSet, basename="quiz-save")
+
+
+urlpatterns = [path("category-list", CategoryList.as_view(), name="카테고리 목록")]
+
+urlpatterns_api_v1 = []
+urlpatterns_api_v1 += router.urls
+
+urlpatterns += [path("api/", include((urlpatterns_api_v1, "api-v1")))]
