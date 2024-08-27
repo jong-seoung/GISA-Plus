@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useApiAxios, makeRestApi } from "../../api";
 import { useParams } from "react-router-dom";
 import {
@@ -10,7 +10,7 @@ import {
   InputGroup,
   Form,
 } from "react-bootstrap";
-import styles from "./DailyQuiz.module.css"; // 모듈 CSS 임포트
+import styles from "./SaveDetailQuiz.module.css"; // 모듈 CSS 임포트
 
 const SAVE_REST_API = makeRestApi("quiz/api/save/");
 

@@ -52,7 +52,9 @@ function CategoryDetail() {
             <Card.Body>
               <Card.Title>오답 노트</Card.Title>
               <Card.Text>틀렸던 문제를 저장하고 다시 풀어보세요</Card.Text>
-              <Button variant="primary">저장된 문제 풀기</Button>
+              <NavLink to="save">
+                <Button variant="primary">저장된 문제 풀기</Button>
+              </NavLink>
             </Card.Body>
           </Card>
         </Col>
