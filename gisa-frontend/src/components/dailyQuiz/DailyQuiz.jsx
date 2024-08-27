@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useApiAxios } from "../api";
+import { useApiAxios } from "../../api";
 import { useParams } from "react-router-dom";
 import {
   Container,
@@ -13,10 +13,10 @@ import {
 import styles from "./DailyQuiz.module.css"; // 모듈 CSS 임포트
 
 function DailyQuiz() {
-  const [{ data: origQuiz = undefined, loading }, refetch] =
-    useApiAxios(`/quiz/api/post/0`);
-  const [quiz, setQuiz] = useState([]);
   const { categoryName } = useParams();
+  const [{ data: origQuiz = undefined, loading }, refetch] =
+    useApiAxios(`/quiz/api/post/0?categoryName=${categoryName}`);
+  const [quiz, setQuiz] = useState([]);
   const [showAnswers, setShowAnswers] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function DailyQuiz() {
 
   const handleNextPage = () => {
     refetch({
-      url: `/quiz/api/post/${quiz.id}`,
+      url: `/quiz/api/post/${quiz.id}?categoryName=${categoryName}`,
       method: "GET",
     });
   };

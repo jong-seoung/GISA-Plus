@@ -2,12 +2,12 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 import TopNav from "./components/TopNav";
-import CategoryList from "./components/CategoryList"
-import CategoryDetail from "./components/CategoryDetail";
-import DailyQuiz from "./components/DailyQuiz";
 import { StatusProvider } from "./contexts/StatusContext";
 import Login from "./components/login/Login";
 import Signup from "./components/login/Signup";
+import DailyQuiz from "./components/dailyQuiz/DailyQuiz";
+import CategoryList from "./pages/category/CategoryList"
+import CategoryDetail from "./pages/category/CategoryDetail";
 
 const router = createBrowserRouter([
   {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useApiAxios } from "../api";
+import { useApiAxios } from "../../api";
 import {
   Card,
   Container,
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 const DONE_STYLE = { textDecoration: "line-through" };
 
 function CategoryList() {
-  const [{ data: origCategoryList = [], loading, error: loadingError }, refetch] = useApiAxios("/quiz/category-list");
+  const [{ data: origCategoryList = undefined, loading, error: loadingError }, refetch] = useApiAxios("/quiz/category-list");
   const [categoryList, setCategoryList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
