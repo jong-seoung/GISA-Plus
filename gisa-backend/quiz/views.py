@@ -76,8 +76,36 @@ class QuizModelViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
 class QuizSaveViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
     queryset = QuizSave.objects.all()
     serializer_class = QuizSaveSerializer
-    serializer_class_map = {"list": QuizListSerializer, "retrieve": QuizSaveSerializer, "create": QuizSaveSerializer}
+    serializer_class_map = {"list": QuizListSerializer, "retrieve": QuizDetailSerializer, "create": QuizSaveSerializer}
     permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        user = request.user
+        quiz_id = kwargs.get("pk")
+
+        # 저장된 퀴즈 목록을 가져옴
+        saved_quizzes = list(QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True))
+
+        # 현재 퀴즈의 인덱스를 찾음
+        try:
+            current_index = saved_quizzes.index(int(quiz_id))
+        except ValueError:
+            return Response({"detail": "Quiz not found in saved list."}, status=status.HTTP_404_NOT_FOUND)
+
+        # 이전 퀴즈와 다음 퀴즈의 ID를 계산
+        next_quiz_id = saved_quizzes[current_index - 1] if current_index > 0 else None
+        prev_quiz_id = saved_quizzes[current_index + 1] if current_index < len(saved_quizzes) - 1 else None
+
+        quiz = Quiz.objects.get(id=quiz_id)
+        serializer = self.get_serializer(quiz)
+
+        response_data = serializer.data
+        response_data["prev_quiz_url"] = f"/save/{prev_quiz_id}/" if prev_quiz_id else None
+        response_data["next_quiz_url"] = f"/save/{next_quiz_id}/" if next_quiz_id else None
+        is_saved = QuizSave.objects.filter(user=user, quiz_id=quiz_id).exists()
+        response_data["is_saved"] = is_saved
+
+        return Response(response_data)
 
     def list(self, request, *args, **kwargs):
         user = request.user
