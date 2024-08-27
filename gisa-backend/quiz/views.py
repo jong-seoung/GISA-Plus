@@ -73,10 +73,24 @@ class QuizModelViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
             return Response({"error": "데이터 처리 중 문제가 발생했습니다."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class QuizSaveViewSet(viewsets.ModelViewSet):
+class QuizSaveViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
     queryset = QuizSave.objects.all()
     serializer_class = QuizSaveSerializer
+    serializer_class_map = {"list": QuizListSerializer, "retrieve": QuizSaveSerializer, "create": QuizSaveSerializer}
     permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        user = request.user
+
+        saved_quiz_ids = QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True)
+
+        if not saved_quiz_ids.exists():
+            return Response({"error": "no Data"}, status=status.HTTP_404_NOT_FOUND)
+
+        quiz_list = Quiz.objects.filter(id__in=saved_quiz_ids)
+
+        serializer = self.get_serializer(quiz_list, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         quiz_id = request.data.get("id")

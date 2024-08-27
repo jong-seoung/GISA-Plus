@@ -47,9 +47,12 @@ class QuizSerializer(serializers.ModelSerializer):
 
 
 class QuizListSerializer(serializers.ModelSerializer):
+    unit = UnitSerializer()
+    image_list = QuizImageSerializer(source="photo_set", many=True)
+
     class Meta:
         model = Quiz
-        fields = ["id", "title", "content"]
+        fields = ["id", "unit", "image_list", "title", "content"]
 
     @staticmethod
     def get_optimized_queryset():
@@ -73,5 +76,5 @@ class QuizDetailSerializer(serializers.ModelSerializer):
 class QuizSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuizSave
-        fields = ["id", "user", "quiz", "saved_at"]
+        fields = ["id", "saved_at"]
         read_only_fields = ["saved_at"]
