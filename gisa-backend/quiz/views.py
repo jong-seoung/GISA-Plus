@@ -35,10 +35,11 @@ class QuizModelViewSet(ActionBasedViewSetMixin, ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         id = kwargs.get("pk")
+        category_name = request.query_params.get("categoryName")  # URL 쿼리 매개변수에서 categoryName 가져오기
 
         # 데이터베이스에서 직접 랜덤 퀴즈를 선택 (PostgreSQL의 경우)
         other_quizzes = (
-            Quiz.objects.filter()
+            Quiz.objects.filter(unit__category__name=category_name)
             .exclude(id=id)
             .order_by("?")
             .select_related("unit")
