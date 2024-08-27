@@ -38,7 +38,6 @@ function DailyQuiz() {
         ...prev,
         is_saved: data.is_saved,
       }));
-      console.log(data);
     }
   };
 
@@ -60,7 +59,6 @@ function DailyQuiz() {
       method: "GET",
     });
   };
-  console.log(quiz);
   if (loading || !quiz || !quiz.unit || !quiz.unit.category) {
     return <p></p>;
   }

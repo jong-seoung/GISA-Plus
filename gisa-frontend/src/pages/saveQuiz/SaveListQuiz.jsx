@@ -2,30 +2,46 @@ import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import React, { useState, useEffect } from "react";
-import { useApiAxios } from "../../api";
-import { useParams, useNavigate } from "react-router-dom";
+import { makeRestApi, useApiAxios } from "../../api";
+import { useNavigate } from "react-router-dom";
 
+const SAVELIST_REST_API = makeRestApi("quiz/api/save");
 
-function GroupExample() {
-  const { categoryName } = useParams();
-  const [{ data: origSaveQuiz = undefined, loading }, refetch] =
-    useApiAxios(`quiz/api/save/`);
+function SaveQuizList() {
+  const [
+    { data: origSaveQuiz = undefined, loading, error },
+    refetch,
+  ] = useApiAxios("quiz/api/save");
+
   const [quiz, setQuiz] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    setQuiz(origSaveQuiz || []);
-  }, [origSaveQuiz]);
+    const fetchData = async () => {
+      try {
+        const { data } = await SAVELIST_REST_API.list();
+        if (data) {
+          setQuiz((prev) => [...data]); 
+        }
+      } catch (error) {
+        console.error("데이터 가져오기 실패:", error);
+      }
+    };
 
-  const handleClick = ({quizItem}) => {
-    navigate(`${quizItem.id}/`);
+    fetchData();
+  }, []); 
+
+  const navigate = useNavigate();
+
+  const handleClick = ({ quizItem }) => {
+    navigate(`${quizItem.id}`);
   };
 
-  console.log(quiz);
   return (
     <Row>
-      {quiz.map((quizItem) => (
-        <Col md={3} key={quizItem.id} onClick={() => handleClick({quizItem})}> {/* 3개씩 한 줄에 표시 */}
+      {!loading && quiz.length === 0 && <p>저장된 퀴즈가 없습니다.</p>}
+      {quiz.map(quizItem => (
+        <Col md={3} key={quizItem.id} onClick={() => handleClick({ quizItem })}>
+          {/* 3개씩 한 줄에 표시 */}
           <Card className="mb-4">
             <Card.Img variant="top" src="holder.js/100px160" />
             <Card.Body>
@@ -33,7 +49,9 @@ function GroupExample() {
               <Card.Text>{quizItem.content}</Card.Text>
             </Card.Body>
             <Card.Footer>
-              <small className="text-muted">{quizItem.unit.category.name} - {quizItem.unit.name}</small>
+              <small className="text-muted">
+                {quizItem.unit.category.name} - {quizItem.unit.name}
+              </small>
             </Card.Footer>
           </Card>
         </Col>
@@ -42,4 +60,4 @@ function GroupExample() {
   );
 }
 
-export default GroupExample;
+export default SaveQuizList;

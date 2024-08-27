@@ -15,9 +15,9 @@ import styles from "./SaveDetailQuiz.module.css"; // 모듈 CSS 임포트
 const SAVE_REST_API = makeRestApi("quiz/api/save/");
 
 function DailyQuiz() {
-  const { categoryName } = useParams();
+  const { quizId, categoryName } = useParams();
   const [{ data: origQuiz = undefined, loading }, refetch] = useApiAxios(
-    `quiz/api/post/0?categoryName=${categoryName}`
+    `quiz/api/save/${quizId}`
   );
   const [quiz, setQuiz] = useState([]);
   const [showAnswers, setShowAnswers] = useState(false);
@@ -38,7 +38,6 @@ function DailyQuiz() {
         ...prev,
         is_saved: data.is_saved,
       }));
-      console.log(data);
     }
   };
 
@@ -56,11 +55,17 @@ function DailyQuiz() {
 
   const handleNextPage = () => {
     refetch({
-      url: `quiz/api/post/${quiz.id}?categoryName=${categoryName}`,
+      url: `quiz/api${quiz.next_quiz_url}`,
       method: "GET",
     });
   };
-  console.log(quiz);
+
+  const handlePrePage = () => {
+    refetch({
+      url: `quiz/api${quiz.prev_quiz_url}`,
+      method: "GET",
+    });
+  };
   if (loading || !quiz || !quiz.unit || !quiz.unit.category) {
     return <p></p>;
   }
@@ -72,16 +77,22 @@ function DailyQuiz() {
           <Card className="mb-4">
             <Card.Body>
               <Row className="align-items-center">
-                {/* 왼쪽 여백 */}
-                <Col xs={1} />
+                {/* 이전 버튼 */}
+                {quiz.prev_quiz_url ? ( // URL이 존재할 때 버튼을 표시
+                  <Col xs={1} onClick={handlePrePage}>
+                    <Button className={styles.noBackground} variant="link">
+                      <i className={`${styles.arrow}`} role="img"></i>
+                    </Button>
+                  </Col>
+                ) : (
+                  <Col xs={1}></Col> // URL이 없으면 빈 공간으로 처리
+                )}
 
                 {/* 퀴즈 내용 */}
                 <Col xs={10}>
                   <Row>
                     <Col className="text-center">
-                      <h4>
-                        {categoryName}, {quiz.unit.name}
-                      </h4>
+                      <h4>{categoryName} - {quiz.unit.name}</h4>
                       <small>{quiz.unit.category.version}</small>
                     </Col>
                   </Row>
@@ -152,14 +163,15 @@ function DailyQuiz() {
                 </Col>
 
                 {/* 다음 버튼 */}
-                <Col xs={1} onClick={handleNextPage}>
-                  <Button className={styles.noBackground} variant="link">
-                    <i
-                      className={`${styles.arrow} ${styles.left}`}
-                      role="img"
-                    ></i>
-                  </Button>
-                </Col>
+                {quiz.next_quiz_url ? (
+                  <Col xs={1} onClick={handleNextPage}>
+                    <Button className={styles.noBackground} variant="link">
+                      <i className={`${styles.arrow} ${styles.left}`} role="img"></i>
+                    </Button>
+                  </Col>
+                ) : (
+                  <Col xs={1}></Col>
+                )}
               </Row>
             </Card.Body>
           </Card>
