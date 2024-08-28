@@ -15,9 +15,9 @@ function CategoryDetail() {
         <Col md={3}>
           <Card className="mb-4">
             <Card.Body>
-              <Card.Title>이론</Card.Title>
-              <Card.Text>시험을 대비할 이론 자료를 확인하세요.</Card.Text>
-              <Button variant="primary">이론 학습하기</Button>
+              <Card.Title> 필기 기출</Card.Title>
+              <Card.Text>필기 기출문제들을 풀어보세요.</Card.Text>
+              <Button variant="primary">기출 문제 보기</Button>
             </Card.Body>
           </Card>
         </Col>
@@ -26,9 +26,9 @@ function CategoryDetail() {
         <Col md={3}>
           <Card className="mb-4">
             <Card.Body>
-              <Card.Title>기출문제</Card.Title>
-              <Card.Text>기출문제들을 풀어보세요.</Card.Text>
-              <Button variant="primary">기출문제 보기</Button>
+              <Card.Title>실기 복원</Card.Title>
+              <Card.Text>실기 복원 문제들을 풀어보세요.</Card.Text>
+              <Button variant="primary">복원 문제 보기</Button>
             </Card.Body>
           </Card>
         </Col>

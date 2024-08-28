@@ -1,9 +1,9 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { Alert, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 
-import { useApiAxios } from "../api";
-import { LOGOUT_URL } from "../constants";
-import { useStatusContext } from "../contexts/StatusContext";
+import { useApiAxios } from "../../api";
+import { LOGOUT_URL } from "../../constants";
+import { useStatusContext } from "../../contexts/StatusContext";
 
 // Alert 컴포넌트의 variant 속성
 //  - https://react-bootstrap.github.io/docs/components/alerts/#alert
@@ -22,6 +22,7 @@ function TopNav() {
     messages = [],
   } = useStatusContext();
 
+  const { categoryName } = useParams();
   const [{ loading, error }, executeLogout] = useApiAxios(
     {
       url: LOGOUT_URL,
@@ -34,7 +35,7 @@ function TopNav() {
     try {
       const response = await executeLogout(); // 로그아웃 POST 요청 전송
       if (response?.status === 200) {
-        window.location.href = '/'
+        window.location.href = "/";
       } else {
         console.error("로그아웃 실패:", response);
       }
@@ -53,11 +54,20 @@ function TopNav() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto" variant="underline">
-              <Nav.Link to="/blog" as={NavLink}>
-                랜덤 문제
+              <Nav.Link to={`${categoryName}/`} as={NavLink}>
+                {categoryName}
               </Nav.Link>
-              <Nav.Link to="/about" as={NavLink}>
-                저장된 문제
+              <Nav.Link to={`${categoryName}/th`} as={NavLink}>
+                필기 기출
+              </Nav.Link>
+              <Nav.Link to={`${categoryName}/pro`} as={NavLink}>
+                실기 복원
+              </Nav.Link>
+              <Nav.Link to={`${categoryName}/daily`} as={NavLink}>
+                데일리
+              </Nav.Link>
+              <Nav.Link to={`${categoryName}/save`} as={NavLink}>
+                오답노트
               </Nav.Link>
               {is_authenticated !== null && (
                 <NavDropdown

@@ -83,18 +83,15 @@ class QuizSaveViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
         user = request.user
         quiz_id = kwargs.get("pk")
 
-        # 저장된 퀴즈 목록을 가져옴
-        saved_quizzes = list(QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True))
+        saved_quizzes = list(QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True).order_by("quiz_id"))
 
-        # 현재 퀴즈의 인덱스를 찾음
         try:
             current_index = saved_quizzes.index(int(quiz_id))
         except ValueError:
             return Response({"detail": "Quiz not found in saved list."}, status=status.HTTP_404_NOT_FOUND)
 
-        # 이전 퀴즈와 다음 퀴즈의 ID를 계산
-        next_quiz_id = saved_quizzes[current_index - 1] if current_index > 0 else None
-        prev_quiz_id = saved_quizzes[current_index + 1] if current_index < len(saved_quizzes) - 1 else None
+        prev_quiz_id = saved_quizzes[current_index - 1] if current_index > 0 else None
+        next_quiz_id = saved_quizzes[current_index + 1] if current_index < len(saved_quizzes) - 1 else None
 
         quiz = Quiz.objects.get(id=quiz_id)
         serializer = self.get_serializer(quiz)
@@ -110,8 +107,7 @@ class QuizSaveViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         user = request.user
 
-        saved_quiz_ids = QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True)
-
+        saved_quiz_ids = QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True).order_by("id")
         if not saved_quiz_ids.exists():
             return Response({"error": "no Data"}, status=status.HTTP_404_NOT_FOUND)
 
