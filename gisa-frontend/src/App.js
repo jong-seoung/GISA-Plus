@@ -1,7 +1,7 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
-import TopNav from "./components/TopNav";
+import TopNav from "./components/navbar/TopNav";
 import { StatusProvider } from "./contexts/StatusContext";
 import Login from "./components/login/Login";
 import Signup from "./components/login/Signup";
