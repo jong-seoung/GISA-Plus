@@ -13,10 +13,9 @@ class ProblemCategoryAdmin(admin.ModelAdmin):
 # Problem 모델 관리
 @admin.register(Problem)
 class ProblemAdmin(admin.ModelAdmin):
-    list_display = ("title", "num", "correct_rate", "category")
+    list_display = ("title", "correct_rate", "category")
     search_fields = ("title",)
     list_filter = ("category",)
-    ordering = ("num",)
 
 
 # ProblemAnswer 모델 관리

@@ -42,11 +42,11 @@ class ProblemListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Problem
-        fields = ["id", "title", "image_list", "answer", "correct_rate"]
+        fields = ["id", "num", "title", "image_list", "answer", "correct_rate"]
 
     @staticmethod
     def get_optimized_queryset():
-        return Problem.objects.all()
+        return Problem.objects.all().order_by("num")
 
 
 class ProblemDetailSerializer(serializers.ModelSerializer):
