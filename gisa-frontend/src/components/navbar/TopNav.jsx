@@ -57,7 +57,7 @@ function TopNav() {
               <Nav.Link to={`${categoryName}/`} as={NavLink}>
                 {categoryName}
               </Nav.Link>
-              <Nav.Link to={`${categoryName}/th`} as={NavLink}>
+              <Nav.Link to={`${categoryName}/problem`} as={NavLink}>
                 필기 기출
               </Nav.Link>
               <Nav.Link to={`${categoryName}/pro`} as={NavLink}>
