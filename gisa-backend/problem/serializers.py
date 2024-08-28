@@ -13,6 +13,10 @@ class ProblemCategorySerializer(serializers.ModelSerializer):
         model = ProblemCategory
         fields = "__all__"
 
+    @staticmethod
+    def get_optimized_queryset():
+        return ProblemCategory.objects.all()
+
 
 class ProblemAnswerSerializer(serializers.ModelSerializer):
     class Meta:

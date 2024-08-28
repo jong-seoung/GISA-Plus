@@ -1,7 +1,12 @@
 from core.mixins import ActionBasedViewSetMixin
-from problem.models import Problem
-from problem.serializers import ProblemDetailSerializer, ProblemListSerializer, ProblemSerializer
-from rest_framework import viewsets
+from problem.models import Problem, ProblemCategory
+from problem.serializers import (
+    ProblemCategorySerializer,
+    ProblemDetailSerializer,
+    ProblemListSerializer,
+    ProblemSerializer,
+)
+from rest_framework import mixins, viewsets
 
 
 class ProblemViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
@@ -21,3 +26,14 @@ class ProblemViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
         "update": ProblemSerializer,
         "partial_update": ProblemSerializer,
     }
+
+
+class ProblemCategoryView(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = ProblemCategory.objects.all()
+    serializer_class = ProblemCategorySerializer
+
+    def get_queryset(self, *args, **kwargs):
+        category_name = self.kwargs.get("category_name", None)
+        self.queryset = self.queryset.filter(name=category_name)
+
+        return self.queryset
