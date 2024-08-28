@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Card, Row, Col } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import { useApiAxios } from "../../api";
 
 const ProblemList = () => {
+  const { categoryName, version } = useParams();
   const [{ data: origProblem = undefined }] =
-    useApiAxios("problem/api/problem");
+    useApiAxios(`problem/api/problem?category=${categoryName}&version=${version}`);
   const [problem, setProblem] = useState([]);
   const [numStyle] = useState(["①", "②", "③", "④", "⑤"]);
   const [answerStates, setAnswerStates] = useState({}); 
   const [imageStates, setImageStates] = useState({});
-console.log(origProblem);
+
   useEffect(() => {
     setProblem(origProblem || []);
   }, [origProblem]);
