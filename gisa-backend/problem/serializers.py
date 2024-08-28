@@ -41,7 +41,7 @@ class ProblemSerializer(serializers.ModelSerializer):
 
 
 class ProblemListSerializer(serializers.ModelSerializer):
-    answer = ProblemAnswerSerializer(source="problemanswer_set", many=True)
+    answer = serializers.SerializerMethodField()
     image_list = ProblemImageSerializer(source="problemphoto_set", many=True)
 
     class Meta:
@@ -51,6 +51,10 @@ class ProblemListSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_optimized_queryset():
         return Problem.objects.all().order_by("num")
+
+    def get_answer(self, obj):
+        answers = obj.problemanswer_set.order_by("?")
+        return ProblemAnswerSerializer(answers, many=True).data
 
 
 class ProblemDetailSerializer(serializers.ModelSerializer):
