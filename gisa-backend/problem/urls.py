@@ -1,8 +1,9 @@
 from django.urls import include, path
+from problem.views import ProblemViewSet
 from rest_framework.routers import DefaultRouter
 
 router_problem = DefaultRouter()
-# router_problem.register(prefix="other", viewset=OtherViewSet)
+router_problem.register(prefix="", viewset=ProblemViewSet)
 
 urlpatterns = []
 
