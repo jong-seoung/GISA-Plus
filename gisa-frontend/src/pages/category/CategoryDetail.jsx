@@ -17,7 +17,9 @@ function CategoryDetail() {
             <Card.Body>
               <Card.Title> 필기 기출</Card.Title>
               <Card.Text>필기 기출문제들을 풀어보세요.</Card.Text>
-              <Button variant="primary">기출 문제 보기</Button>
+              <NavLink to="problem">
+                <Button variant="primary">기출 문제 보기</Button>
+              </NavLink>
             </Card.Body>
           </Card>
         </Col>

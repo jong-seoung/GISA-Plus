@@ -5,6 +5,8 @@ import TopNav from "./components/navbar/TopNav";
 import { StatusProvider } from "./contexts/StatusContext";
 import Login from "./components/login/Login";
 import Signup from "./components/login/Signup";
+import ProblemDetail from "./pages/problem/ProblemDetail";
+import ProblemList from "./pages/problem/ProblemList";
 import DailyQuiz from "./pages/dailyQuiz/DailyQuiz";
 import SaveListQuiz from "./pages/saveQuiz/SaveListQuiz";
 import SaveDetailQuiz from "./pages/saveQuiz/SaveDetailQuiz";
@@ -33,6 +35,8 @@ const router = createBrowserRouter([
         element: <SaveListQuiz />,
       },
       { path: ":categoryName/save/:quizId", element: <SaveDetailQuiz /> },
+      { path: ":categoryName/problem/", element: <ProblemList /> },
+      { path: ":categoryName/problem/:version", element: <ProblemDetail /> },
     ],
   },
 ]);
