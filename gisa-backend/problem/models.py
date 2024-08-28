@@ -10,7 +10,6 @@ from django.utils import timezone
 from django.utils.encoding import force_str
 from django_lifecycle import BEFORE_UPDATE, LifecycleModelMixin, hook
 from PIL import Image
-from quiz.models import Category
 
 
 class ProblemCategory(models.Model):
@@ -25,7 +24,7 @@ class Problem(models.Model):
     num = models.SmallIntegerField()
     title = models.CharField(max_length=100)
     correct_rate = models.SmallIntegerField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_problem")
+    category = models.ForeignKey(ProblemCategory, on_delete=models.CASCADE, related_name="category_problem")
 
 
 class ProblemAnswer(models.Model):
