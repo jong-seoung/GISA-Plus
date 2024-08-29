@@ -27,11 +27,11 @@ class Restore(models.Model):
 
 
 class RestoreAnswer(models.Model):
-    answer = models.BooleanField(default=False)
+    name = models.CharField(max_length=100, unique=True)
     restore = models.ForeignKey(Restore, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"restore:{self.restore.id} - {self.name}:{self.answer}"
+        return f"restore:{self.restore.id} - {self.name}"
 
 
 def uuid_name_upload_to(instance: models.Model, filename: str) -> str:
