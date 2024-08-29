@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { makeRestApi } from "../../api";
+import { useApiAxios, makeRestApi } from "../../api";
 import {
   Card,
   Container,
   ListGroup,
+  FormControl,
+  InputGroup,
 } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -12,7 +14,7 @@ const DONE_STYLE = { textDecoration: "line-through" };
 
 function CategoryList() {
   const { categoryName } = useParams();
-  const VERSION_REST_API = makeRestApi(`/problem/api/category/${categoryName}`);
+  const VERSION_REST_API = makeRestApi(`/restore/api/category/${categoryName}`);
   const [categoryList, setCategoryList] = useState([]);
   const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ function CategoryList() {
     };
 
     fetchData();
-  }, [VERSION_REST_API]); 
+  }, []); 
 
   const handleClick = (version) => {
     navigate(`${version}/`);
@@ -39,7 +41,7 @@ function CategoryList() {
     <Container className="mt-4 p-0">
       <Card>
         <Card.Header className="d-flex justify-content-between align-items-center">
-          <div><h4 className="mt-2">{categoryName} - 필기 기출</h4></div>
+          <div><h4 className="mt-2">{categoryName} - 실기 복원</h4></div>
         </Card.Header>
         <ListGroup variant="flush">
           {categoryList.map((category, index) => (

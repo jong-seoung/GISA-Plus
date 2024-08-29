@@ -24,6 +24,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("quiz/", include("quiz.urls")),
     path("problem/", include("problem.urls")),
+    path("restore/", include("restore.urls")),
 ]
 
 if settings.DEBUG:

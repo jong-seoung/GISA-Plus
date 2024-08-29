@@ -60,7 +60,7 @@ function TopNav() {
               <Nav.Link to={`${categoryName}/problem`} as={NavLink}>
                 필기 기출
               </Nav.Link>
-              <Nav.Link to={`${categoryName}/pro`} as={NavLink}>
+              <Nav.Link to={`${categoryName}/실기`} as={NavLink}>
                 실기 복원
               </Nav.Link>
               <Nav.Link to={`${categoryName}/daily`} as={NavLink}>

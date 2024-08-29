@@ -31,6 +31,7 @@ const ProblemList = () => {
 
   return (
     <>
+      <div className="text-center mb-3"><h2>{version} {categoryName} 필기</h2></div>
       <Card>
         <Row>
           {problem.map((problemItem, problemIndex) => (

@@ -7,6 +7,8 @@ import Login from "./components/login/Login";
 import Signup from "./components/login/Signup";
 import ProblemDetail from "./pages/problem/ProblemDetail";
 import ProblemList from "./pages/problem/ProblemList";
+import RestoreDetial from "./pages/restore/RestoreDetail";
+import RestoreList from "./pages/restore/RestoreList";
 import DailyQuiz from "./pages/dailyQuiz/DailyQuiz";
 import SaveListQuiz from "./pages/saveQuiz/SaveListQuiz";
 import SaveDetailQuiz from "./pages/saveQuiz/SaveDetailQuiz";
@@ -37,6 +39,8 @@ const router = createBrowserRouter([
       { path: ":categoryName/save/:quizId", element: <SaveDetailQuiz /> },
       { path: ":categoryName/problem/", element: <ProblemList /> },
       { path: ":categoryName/problem/:version", element: <ProblemDetail /> },
+      { path: ":categoryName/실기/", element: <RestoreList /> },
+      { path: ":categoryName/실기/:version", element: <RestoreDetial /> },
     ],
   },
 ]);

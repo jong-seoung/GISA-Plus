@@ -30,7 +30,9 @@ function CategoryDetail() {
             <Card.Body>
               <Card.Title>실기 복원</Card.Title>
               <Card.Text>실기 복원 문제들을 풀어보세요.</Card.Text>
-              <Button variant="primary">복원 문제 보기</Button>
+              <NavLink to="실기">
+                <Button variant="primary">복원 문제 보기</Button>
+              </NavLink>
             </Card.Body>
           </Card>
         </Col>
