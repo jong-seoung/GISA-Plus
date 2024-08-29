@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useApiAxios, makeRestApi } from "../../api";
+import { useApiAxios } from "../../api";
 import { useParams } from "react-router-dom";
 import {
   Container,
@@ -13,11 +13,9 @@ import {
 
 function Dailyrestore() {
   const { categoryName, version } = useParams();
-  const [{ data: origRestore = undefined, loading }, refetch] = useApiAxios(
+  const [{ data: origRestore = undefined, loading }] = useApiAxios(
     `restore/api/restore/${categoryName}/${version}`
   );
-
-  const SAVE_REST_API = makeRestApi("restore/api/save/");
 
   const [restore, setRestore] = useState([]);
   const [showAnswers, setShowAnswers] = useState({});
@@ -25,8 +23,6 @@ function Dailyrestore() {
   useEffect(() => {
     setRestore(origRestore || []);
   }, [origRestore]);
-
-  console.log(restore);
 
   const handleShowAnswers = (index, idx) => {
     setShowAnswers(prevState => ({
@@ -41,13 +37,14 @@ function Dailyrestore() {
 
   return (
     <Container className="mt-4">
+      <div className="text-center mb-3">
+        <h2>
+          {version} {categoryName} 실기
+        </h2>
+      </div>
       <Row className="justify-content-center">
         <Col md={12} className="p-0">
           <Card className="mb-4">
-            <Col className="text-center">
-              <h4>{categoryName}</h4>
-              <small>{/* {restoreItem.unit.category.version} */}</small>
-            </Col>
             {restore.map((restoreItem, index) => (
               <Card.Body key={index}>
                 <Row className="align-items-center">
@@ -115,7 +112,9 @@ function Dailyrestore() {
                         ))
                       ) : (
                         <li>
-                          <small>정답이 지정되지 않았습니다. 문의 부탁드립니다.</small>
+                          <small>
+                            정답이 지정되지 않았습니다. 문의 부탁드립니다.
+                          </small>
                         </li>
                       )}
                     </Row>

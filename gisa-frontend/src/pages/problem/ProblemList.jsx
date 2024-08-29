@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useApiAxios, makeRestApi } from "../../api";
+import { makeRestApi } from "../../api";
 import {
   Card,
   Container,
   ListGroup,
-  FormControl,
-  InputGroup,
 } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -31,7 +29,7 @@ function CategoryList() {
     };
 
     fetchData();
-  }, []); 
+  }, [VERSION_REST_API]); 
 
   const handleClick = (version) => {
     navigate(`${version}/`);
