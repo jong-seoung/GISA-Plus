@@ -23,8 +23,8 @@ class RestorePhotoSerializer(serializers.ModelSerializer):
 class RestoreListSerializer(serializers.ModelSerializer):
     category = RestoreCategoryListSerializer()
     answer = RestoreAnswerSerializer(source="restoreanswer_set", many=True)
-    photo = RestorePhotoSerializer(source="restorephoto_set", many=True)
+    image_list = RestorePhotoSerializer(source="restorephoto_set", many=True)
 
     class Meta:
         model = Restore
-        fields = ["id", "num", "title", "category", "answer", "photo"]
+        fields = ["id", "num", "title", "category", "answer", "image_list"]

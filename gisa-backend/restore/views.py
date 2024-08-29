@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
 from restore.models import Restore, RestoreCategory
 from restore.serializers import RestoreCategoryListSerializer, RestoreListSerializer
 
@@ -14,4 +15,7 @@ class RestoreView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         self.queryset = Restore.objects.filter(category__name=kwargs["category"], category__version=kwargs["version"])
-        return super().list(request, *args, **kwargs)
+
+        serializer = self.serializer_class(self.queryset, many=True)
+
+        return Response(serializer.data)
