@@ -41,7 +41,7 @@ function CategoryList() {
     <Container className="mt-4 p-0">
       <Card>
         <Card.Header className="d-flex justify-content-between align-items-center">
-          <div><h4 className="mt-2">{categoryName}</h4></div>
+          <div><h4 className="mt-2">{categoryName} - 필기 기출</h4></div>
         </Card.Header>
         <ListGroup variant="flush">
           {categoryList.map((category, index) => (
