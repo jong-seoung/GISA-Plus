@@ -14,6 +14,8 @@ import SaveListQuiz from "./pages/saveQuiz/SaveListQuiz";
 import SaveDetailQuiz from "./pages/saveQuiz/SaveDetailQuiz";
 import CategoryList from "./pages/category/CategoryList";
 import CategoryDetail from "./pages/category/CategoryDetail";
+import Test from "./components/create/RestoreCreate";
+
 
 const router = createBrowserRouter([
   {
@@ -41,6 +43,8 @@ const router = createBrowserRouter([
       { path: ":categoryName/problem/:version", element: <ProblemDetail /> },
       { path: ":categoryName/실기/", element: <RestoreList /> },
       { path: ":categoryName/실기/:version", element: <RestoreDetial /> },
+      // { path: ":categoryName/실기/:version", element: <Test2 /> },
+      { path: "test", element: < Test/>},
     ],
   },
 ]);
