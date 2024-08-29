@@ -14,7 +14,7 @@ const DONE_STYLE = { textDecoration: "line-through" };
 
 function CategoryList() {
   const { categoryName } = useParams();
-  const VERSION_REST_API = makeRestApi(`/problem/api/category/${categoryName}`);
+  const VERSION_REST_API = makeRestApi(`/restore/api/category/${categoryName}`);
   const [categoryList, setCategoryList] = useState([]);
   const navigate = useNavigate();
 
@@ -41,7 +41,7 @@ function CategoryList() {
     <Container className="mt-4 p-0">
       <Card>
         <Card.Header className="d-flex justify-content-between align-items-center">
-          <div><h4 className="mt-2">{categoryName}</h4></div>
+          <div><h4 className="mt-2">{categoryName} - 실기 복원</h4></div>
         </Card.Header>
         <ListGroup variant="flush">
           {categoryList.map((category, index) => (
