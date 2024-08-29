@@ -28,3 +28,16 @@ class RestoreListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restore
         fields = ["id", "num", "title", "category", "answer", "image_list"]
+
+
+class ManagerRestoreSerializer(serializers.ModelSerializer):
+    category = RestoreCategoryListSerializer()
+    answer = RestoreAnswerSerializer(source="restoreanswer_set", many=True)
+    image_list = RestorePhotoSerializer(source="restorephoto_set", many=True)
+
+    class Meta:
+        model = Restore
+        fields = ["id", "num", "title", "category", "answer", "image_list"]
+
+    def get_optimized_queryset():
+        return Restore.objects.all()
