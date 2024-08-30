@@ -31,7 +31,7 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 403) {
       const next_url = window.location.href;
       window.location.href = `${LOGIN_URL}?next=${next_url}`;
     } else if (error.response?.status === 400) {

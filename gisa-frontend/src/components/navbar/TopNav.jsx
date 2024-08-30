@@ -2,7 +2,7 @@ import { NavLink, useParams } from "react-router-dom";
 import { Alert, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 
 import { useApiAxios } from "../../api";
-import { LOGOUT_URL } from "../../constants";
+import { LOGIN_URL, LOGOUT_URL, SIGNUP_URL, PROFILE_URL } from "../../constants";
 import { useStatusContext } from "../../contexts/StatusContext";
 
 // Alert 컴포넌트의 variant 속성
@@ -76,17 +76,17 @@ function TopNav() {
                 >
                   {!is_authenticated && (
                     <>
-                      <NavDropdown.Item to="/login" as={NavLink}>
+                      <NavDropdown.Item to={LOGIN_URL} as={NavLink}>
                         로그인
                       </NavDropdown.Item>
-                      <NavDropdown.Item to="/signup" as={NavLink}>
+                      <NavDropdown.Item to={SIGNUP_URL} as={NavLink}>
                         회원가입
                       </NavDropdown.Item>
                     </>
                   )}
                   {is_authenticated && (
                     <>
-                      <NavDropdown.Item to="/profile" as={NavLink}>
+                      <NavDropdown.Item to={PROFILE_URL} as={NavLink}>
                         프로필
                       </NavDropdown.Item>
                       <NavDropdown.Divider />
