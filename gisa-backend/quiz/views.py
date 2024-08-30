@@ -1,24 +1,9 @@
 from core.mixins import ActionBasedViewSetMixin
-from quiz.models import Category, Quiz, QuizSave
-from quiz.serializers import (
-    CategoryListSerializer,
-    QuizDetailSerializer,
-    QuizListSerializer,
-    QuizSaveSerializer,
-    QuizSerializer,
-)
-from rest_framework import generics, status, viewsets
-from rest_framework.mixins import ListModelMixin
+from quiz.models import Quiz, QuizSave
+from quiz.serializers import QuizDetailSerializer, QuizListSerializer, QuizSaveSerializer, QuizSerializer
+from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-
-class CategoryList(generics.GenericAPIView, ListModelMixin):
-    queryset = Category.objects.all()
-    serializer_class = CategoryListSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
 
 class QuizModelViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
