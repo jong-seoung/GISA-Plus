@@ -48,7 +48,7 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 third_apps = ["rest_framework", "corsheaders", "django_extensions"]
 
-local_apps = ["accounts", "quiz", "problem", "restore"]
+local_apps = ["accounts", "core", "quiz", "problem", "restore"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",

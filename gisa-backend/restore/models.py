@@ -2,7 +2,7 @@ from os.path import splitext
 from typing import List
 from uuid import uuid4
 
-from core.models import TimeStampedModel
+from core.models import MainCategory, TimeStampedModel
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.db import models
@@ -13,11 +13,11 @@ from PIL import Image
 
 
 class RestoreCategory(models.Model):
-    name = models.CharField(max_length=100)
+    main_category = models.ForeignKey(MainCategory, on_delete=models.CASCADE, related_name="restore_categories")
     version = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.name} - {self.version}"
+        return f"{self.main_category.name} - {self.version}"
 
 
 class Restore(models.Model):
