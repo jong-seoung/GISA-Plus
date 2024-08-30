@@ -31,7 +31,7 @@ class QuizModelViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
 
         # 데이터베이스에서 직접 랜덤 퀴즈를 선택 (PostgreSQL의 경우)
         other_quizzes = (
-            Quiz.objects.filter(unit__category__name=category_name)
+            Quiz.objects.filter(unit__category__main_category__name=category_name)
             .exclude(id=id)
             .order_by("?")
             .select_related("unit")
