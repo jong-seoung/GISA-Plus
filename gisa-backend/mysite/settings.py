@@ -46,7 +46,7 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 # Application definition
 
-third_apps = ["rest_framework", "corsheaders", "django_extensions"]
+third_apps = ["rest_framework", "corsheaders", "django_extensions", "guardian"]
 
 local_apps = ["accounts", "core", "quiz", "problem", "restore"]
 
@@ -98,6 +98,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mysite.wsgi.application"
 
+
+# django-guardian
+# https://django-guardian.readthedocs.io/en/stable/index.html
+
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend", "guardian.backends.ObjectPermissionBackend")
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
