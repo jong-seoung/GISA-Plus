@@ -16,7 +16,9 @@ class RestoreView(ListAPIView):
     serializer_class = RestoreListSerializer
 
     def list(self, request, *args, **kwargs):
-        self.queryset = Restore.objects.filter(category__name=kwargs["category"], category__version=kwargs["version"])
+        self.queryset = Restore.objects.filter(
+            category__main_category__name=kwargs["category"], category__version=kwargs["version"]
+        )
 
         serializer = self.serializer_class(self.queryset, many=True)
 
