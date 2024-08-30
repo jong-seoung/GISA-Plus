@@ -7,7 +7,7 @@ import RestoreCard from "../../components/practical/RestoreCard";
 function Dailyrestore() {
   const { categoryName, version } = useParams();
   const [{ data: origRestore = undefined, loading }] = useApiAxios(
-    `restore/api/restore/${categoryName}/${version}`
+    `restore/api/restore/?categoryName=${categoryName}&version=${version}`
   );
 
   const [restore, setRestore] = useState([]);

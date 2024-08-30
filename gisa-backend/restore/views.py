@@ -1,4 +1,5 @@
 from core.mixins import ActionBasedViewSetMixin
+from core.permissions import check_object_permissions
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -12,15 +13,22 @@ class RestoreCategoryListView(ListAPIView):
     serializer_class = RestoreCategoryListSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self, *args, **kwargs):
+        category_name = self.request.query_params.get("categoryName", None)
+        self.queryset = self.queryset.filter(main_category__name=category_name)
+        check_object_permissions(self, category_name)
+        return self.queryset
+
 
 class RestoreView(ListAPIView):
     queryset = Restore.objects.all()
     serializer_class = RestoreListSerializer
 
     def list(self, request, *args, **kwargs):
-        self.queryset = Restore.objects.filter(
-            category__main_category__name=kwargs["category"], category__version=kwargs["version"]
-        )
+        category_name = self.request.query_params.get("categoryName")
+        version = self.request.query_params.get("version")
+
+        self.queryset = Restore.objects.filter(category__main_category__name=category_name, category__version=version)
 
         serializer = self.serializer_class(self.queryset, many=True)
 
