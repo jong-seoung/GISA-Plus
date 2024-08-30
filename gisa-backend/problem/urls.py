@@ -6,6 +6,6 @@ router_problem = DefaultRouter()
 router_problem.register(prefix="problem", viewset=ProblemViewSet)
 
 urlpatterns = [
-    path("api/category/<str:category_name>/", ProblemCategoryView.as_view(), name="자격증 별, 필기 회차"),
+    path("api/category/", ProblemCategoryView.as_view(), name="자격증 별, 필기 회차"),
     path("api/", include((router_problem.urls, "problem-api-v1"))),
 ]

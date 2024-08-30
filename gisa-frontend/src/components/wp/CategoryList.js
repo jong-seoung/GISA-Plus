@@ -7,7 +7,7 @@ import { makeRestApi } from "../../api";
 
 function CommonCategoryList({ apiUrl, titleSuffix }) {
   const { categoryName } = useParams();
-  const VERSION_REST_API = makeRestApi(`${apiUrl}/${categoryName}`);
+  const VERSION_REST_API = makeRestApi(`${apiUrl}/?categoryName=${categoryName}`);
   const [categoryList, setCategoryList] = useState([]);
   const navigate = useNavigate();
 
