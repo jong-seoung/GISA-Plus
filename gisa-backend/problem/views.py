@@ -1,8 +1,20 @@
 from core.mixins import ActionBasedViewSetMixin
 from problem.models import Problem, ProblemCategory
 from problem.serializers import ProblemCategorySerializer, ProblemListSerializer, ProblemSerializer
-from rest_framework import mixins, viewsets
+from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListAPIView
+
+
+class ProblemCategoryView(ListAPIView):
+    queryset = ProblemCategory.objects.all()
+    serializer_class = ProblemCategorySerializer
+
+    def get_queryset(self, *args, **kwargs):
+        category_name = self.kwargs.get("category_name", None)
+        self.queryset = self.queryset.filter(main_category__name=category_name)
+
+        return self.queryset
 
 
 class ProblemViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
@@ -36,18 +48,7 @@ class ProblemViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
             raise ValidationError({"detail": "version 파라미터가 필요합니다."})
 
         # 필터링 적용
-        queryset = queryset.filter(category__name=category)
+        queryset = queryset.filter(category__main_category__name=category)
         queryset = queryset.filter(category__version=version)
 
         return queryset
-
-
-class ProblemCategoryView(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = ProblemCategory.objects.all()
-    serializer_class = ProblemCategorySerializer
-
-    def get_queryset(self, *args, **kwargs):
-        category_name = self.kwargs.get("category_name", None)
-        self.queryset = self.queryset.filter(name=category_name)
-
-        return self.queryset
