@@ -1,6 +1,7 @@
 from core.mixins import ActionBasedViewSetMixin
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from restore.models import Restore, RestoreCategory
 from restore.serializers import ManagerRestoreSerializer, RestoreCategoryListSerializer, RestoreListSerializer
@@ -9,6 +10,7 @@ from restore.serializers import ManagerRestoreSerializer, RestoreCategoryListSer
 class RestoreCategoryListView(ListAPIView):
     queryset = RestoreCategory.objects.all()
     serializer_class = RestoreCategoryListSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class RestoreView(ListAPIView):

@@ -1,7 +1,11 @@
-from core.models import MainCategory
 from django.contrib import admin
+from guardian.admin import GuardedModelAdmin
+
+from .models import MainCategory
 
 
-@admin.register(MainCategory)
-class adminMainCategory(admin.ModelAdmin):
+class MainCategoryAdmin(GuardedModelAdmin):
     pass
+
+
+admin.site.register(MainCategory, MainCategoryAdmin)

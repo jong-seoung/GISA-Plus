@@ -1,19 +1,21 @@
 from core.mixins import ActionBasedViewSetMixin
+from core.permissions import check_object_permissions
 from problem.models import Problem, ProblemCategory
 from problem.serializers import ProblemCategorySerializer, ProblemListSerializer, ProblemSerializer
 from rest_framework import viewsets
-from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 
 
 class ProblemCategoryView(ListAPIView):
     queryset = ProblemCategory.objects.all()
     serializer_class = ProblemCategorySerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self, *args, **kwargs):
         category_name = self.kwargs.get("category_name", None)
         self.queryset = self.queryset.filter(main_category__name=category_name)
-
+        check_object_permissions(self, category_name)
         return self.queryset
 
 
@@ -33,21 +35,17 @@ class ProblemViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
         # "update": ProblemSerializer,
         # "partial_update": ProblemSerializer,
     }
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = self.queryset_map.get(self.action, self.queryset)
 
         # 쿼리 파라미터에서 'category'와 'version'을 가져옴
-        category = self.request.query_params.get("category")
-        version = self.request.query_params.get("version")
+        category = self.request.query_params.get("category", None)
+        version = self.request.query_params.get("version", None)
 
-        # 파라미터가 없는 경우 예외 처리
-        if not category:
-            raise ValidationError({"detail": "category 파라미터가 필요합니다."})
-        if not version:
-            raise ValidationError({"detail": "version 파라미터가 필요합니다."})
+        check_object_permissions(self, category)
 
-        # 필터링 적용
         queryset = queryset.filter(category__main_category__name=category)
         queryset = queryset.filter(category__version=version)
 

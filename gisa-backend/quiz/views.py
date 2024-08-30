@@ -1,4 +1,5 @@
 from core.mixins import ActionBasedViewSetMixin
+from core.permissions import check_object_permissions
 from quiz.models import Quiz, QuizSave
 from quiz.serializers import QuizDetailSerializer, QuizListSerializer, QuizSaveSerializer, QuizSerializer
 from rest_framework import status, viewsets
@@ -23,11 +24,13 @@ class QuizModelViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
         "update": QuizSerializer,
         "partial_update": QuizSerializer,
     }
+    permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
         user = request.user
         id = kwargs.get("pk")
-        category_name = request.query_params.get("categoryName")  # URL 쿼리 매개변수에서 categoryName 가져오기
+        category_name = request.query_params.get("categoryName")
+        check_object_permissions(self, category_name)
 
         # 데이터베이스에서 직접 랜덤 퀴즈를 선택 (PostgreSQL의 경우)
         other_quizzes = (
@@ -67,6 +70,9 @@ class QuizSaveViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         user = request.user
         quiz_id = kwargs.get("pk")
+        # category_name = request.query_params.get("categoryName")
+        # check_object_permissions(self, category_name)
+        # 추가하기
 
         saved_quizzes = list(QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True).order_by("quiz_id"))
 
