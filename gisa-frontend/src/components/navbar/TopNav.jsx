@@ -2,7 +2,12 @@ import { NavLink, useParams } from "react-router-dom";
 import { Alert, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 
 import { useApiAxios } from "../../api";
-import { LOGIN_URL, LOGOUT_URL, SIGNUP_URL, PROFILE_URL } from "../../constants";
+import {
+  LOGIN_URL,
+  LOGOUT_URL,
+  SIGNUP_URL,
+  PROFILE_URL,
+} from "../../constants";
 import { useStatusContext } from "../../contexts/StatusContext";
 
 // Alert 컴포넌트의 variant 속성
@@ -54,21 +59,27 @@ function TopNav() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto" variant="underline">
-              <Nav.Link to={`${categoryName}/`} as={NavLink}>
-                {categoryName}
-              </Nav.Link>
-              <Nav.Link to={`${categoryName}/problem`} as={NavLink}>
-                필기 기출
-              </Nav.Link>
-              <Nav.Link to={`${categoryName}/실기`} as={NavLink}>
-                실기 복원
-              </Nav.Link>
-              <Nav.Link to={`${categoryName}/daily`} as={NavLink}>
-                데일리
-              </Nav.Link>
-              <Nav.Link to={`${categoryName}/save`} as={NavLink}>
-                오답노트
-              </Nav.Link>
+              {categoryName == undefined ? (
+                ""
+              ) : (
+                <>
+                  <Nav.Link to={`${categoryName}/`} as={NavLink}>
+                    {categoryName}
+                  </Nav.Link>
+                  <Nav.Link to={`${categoryName}/problem`} as={NavLink}>
+                    필기 기출
+                  </Nav.Link>
+                  <Nav.Link to={`${categoryName}/실기`} as={NavLink}>
+                    실기 복원
+                  </Nav.Link>
+                  <Nav.Link to={`${categoryName}/daily`} as={NavLink}>
+                    데일리
+                  </Nav.Link>
+                  <Nav.Link to={`${categoryName}/save`} as={NavLink}>
+                    오답노트
+                  </Nav.Link>
+                </>
+              )}
               {is_authenticated !== null && (
                 <NavDropdown
                   title={is_authenticated ? `${username}의 계정` : "계정"}
