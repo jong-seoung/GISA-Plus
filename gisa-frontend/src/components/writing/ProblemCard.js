@@ -19,12 +19,19 @@ const ProblemCard = ({
       position: "relative",
     }}
   >
-    <ProblemImage
-      imageState={imageStates[`${problemIndex}`]}
-      problemIndex={problemIndex}
-    />
-    <Card.Body style={{ position: "relative", zIndex: 0 }}>
-      <ProblemTitle num={problemItem.num} title={problemItem.title} />
+    <Card.Body style={{ position: "relative"}}>
+      <div style={{  zIndex: 0, display: 'flex', alignItems: 'center', position: 'relative' }}>
+        {/* 이미지 컴포넌트 */}
+        <ProblemImage
+          imageState={imageStates[`${problemIndex}`]}
+          problemIndex={problemIndex}
+        />
+        {/* 문제 제목 컴포넌트 */}
+        <div style={{ flex: 1, position: 'relative', zIndex: 1}}>
+          <ProblemTitle num={problemItem.num} title={problemItem.title} />
+        </div>
+      </div>
+      {/* 문제 답변 컴포넌트 */}
       <ProblemAnswers
         answers={problemItem.answer}
         numStyle={numStyle}

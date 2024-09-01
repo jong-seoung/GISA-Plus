@@ -7,9 +7,9 @@ const ProblemImage = ({ imageState, problemIndex }) => {
 
   const imageUrl = "http://localhost:8000/media/problem/correct/correct.png";
   const isCorrect = imageState === "true";
-  const imgAlt = isCorrect ? "정답 이미지" : "오답 이미지"
+  const imgAlt = isCorrect ? "정답 이미지" : "오답 이미지";
   const clipPath = isCorrect ? "inset(0 50% 0 0)" : "inset(0 0 0 50%)";
-  const leftPosition = isCorrect ? "-10px" : "-90px";
+  const leftPosition = isCorrect ? "-6.5%" : "-19%";
 
   return (
     <img
@@ -18,9 +18,10 @@ const ProblemImage = ({ imageState, problemIndex }) => {
       alt={imgAlt}
       style={{
         position: "absolute",
-        top: -25,
         left: leftPosition,
-        zIndex: 0,
+        top: "17%",
+        transform: "translateY(-50%)",
+        zIndex: 1,
         width: "30%",
         clipPath: clipPath,
       }}
