@@ -14,7 +14,7 @@ import SaveListQuiz from "./pages/saveQuiz/SaveListQuiz";
 import SaveDetailQuiz from "./pages/saveQuiz/SaveDetailQuiz";
 import CategoryList from "./pages/category/CategoryList";
 import CategoryDetail from "./pages/category/CategoryDetail";
-import Test from "./components/create/RestoreCreate";
+import Test from "./pages/Payment"
 
 
 const router = createBrowserRouter([
