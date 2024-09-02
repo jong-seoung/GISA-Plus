@@ -6,6 +6,7 @@ const toBoolean = (str) => {
   // 디폴트: "http://localhost:8000/
   const API_HOST = process.env.REACT_APP_API_HOST || "http://localhost:8000";
   const FRONT_URL = "http://localhost:3000";
+  const PortOne = process.env.REACT_APP_PortOne;
   
   // 0 : no timeout
   const API_TIMEOUT = parseInt(process.env.REACT_APP_API_TIMEOUT) || 0;
@@ -31,4 +32,5 @@ const toBoolean = (str) => {
     LOGOUT_URL,
     SIGNUP_URL,
     PROFILE_URL,
+    PortOne,
   };
