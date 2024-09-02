@@ -1,5 +1,5 @@
 from core.mixins import ActionBasedViewSetMixin
-from core.permissions import check_object_permissions
+from core.permissions import IsCategorySubscriber
 from problem.models import Problem, ProblemCategory
 from problem.serializers import ProblemCategorySerializer, ProblemListSerializer, ProblemSerializer
 from rest_framework import viewsets
@@ -10,12 +10,11 @@ from rest_framework.permissions import IsAuthenticated
 class ProblemCategoryView(ListAPIView):
     queryset = ProblemCategory.objects.all()
     serializer_class = ProblemCategorySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsCategorySubscriber]
 
     def get_queryset(self, *args, **kwargs):
         category_name = self.request.query_params.get("categoryName", None)
         self.queryset = self.queryset.filter(main_category__name=category_name)
-        check_object_permissions(self, category_name)
         return self.queryset
 
 
@@ -35,16 +34,14 @@ class ProblemViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
         # "update": ProblemSerializer,
         # "partial_update": ProblemSerializer,
     }
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsCategorySubscriber]
 
     def get_queryset(self):
         queryset = self.queryset_map.get(self.action, self.queryset)
 
         # 쿼리 파라미터에서 'category'와 'version'을 가져옴
-        category = self.request.query_params.get("category", None)
+        category = self.request.query_params.get("categoryName", None)
         version = self.request.query_params.get("version", None)
-
-        check_object_permissions(self, category)
 
         queryset = queryset.filter(category__main_category__name=category)
         queryset = queryset.filter(category__version=version)
