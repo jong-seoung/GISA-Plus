@@ -56,7 +56,7 @@ const SignupPage = () => {
       <h2 className="text-center">회원가입</h2>
       {successMessage && (
         <Alert variant="success">
-          {successMessage}, 자동 로그인 됩니다.
+          {successMessage} 자동 로그인 됩니다.
         </Alert>
       )}
       {error && (
