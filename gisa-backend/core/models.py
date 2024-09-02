@@ -1,3 +1,4 @@
+from accounts.models import User
 from django.db import models
 
 
@@ -11,6 +12,7 @@ class TimeStampedModel(models.Model):
 
 class MainCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    managers = models.ManyToManyField(User, related_name="managed_categories")
 
     def __str__(self):
         return self.name
