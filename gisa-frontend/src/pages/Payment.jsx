@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Col, Row } from "react-bootstrap";
 import { PortOne } from "../constants";
-import axios from "axios";
+import { makeRestApi } from "../api"
+
+const Payment_REST_API = makeRestApi("payment/api/purchase-subscription/");
 
 const Payment = ({ name, number }) => {
-  name = "정보처리기사"
-  number = 100;
+  // name = "정보처리기사"
+  // number = 100;
 
   const [formData, setFormData] = useState({
     pgValue: "kakaopay.TC0ONETIME", // 기본 PG사 코드
@@ -58,25 +60,20 @@ const Payment = ({ name, number }) => {
       m_redirect_url: "",
     };
 
-    console.log(data);
-
     IMP.request_pay(data, async rsp => {
       if (rsp.success) {
         try {
           console.log("백엔드로 결제 정보 전송");
-          // 백엔드로 결제 정보 전송
-          // const response = await axios.post(
-          //   "http://localhost:8000/api/save_payment/",
-          //   {
-          //     imp_uid: rsp.imp_uid,
-          //     merchant_uid: rsp.merchant_uid,
-          //     amount: rsp.paid_amount,
-          //     categoryName: "YourCategoryName", // 카테고리 이름을 프론트엔드에서 전달하거나 미리 설정
-          //     status: rsp.status,
-          //     paid_at: rsp.paid_at,
-            // }
-          // );
-          console.log("백엔드에 결제 정보 저장 성공");
+          const data =             {
+            imp_uid: rsp.imp_uid,
+            merchant_uid: rsp.merchant_uid,
+            amount: rsp.paid_amount,
+            categoryName: {name}, 
+            status: rsp.status,
+            paid_at: rsp.paid_at,
+          }
+          const response = Payment_REST_API.create({ data });
+          console.log("백엔드에 결제 정보 저장 성공", response);
         } catch (error) {
           console.error("백엔드에 결제 정보 저장 실패");
         }
