@@ -1,3 +1,4 @@
+from accounts.models import Manager
 from core.models import MainCategory
 from payment.models import Subscription
 from rest_framework.exceptions import PermissionDenied
@@ -21,16 +22,19 @@ class IsCategorySubscriber(BasePermission):
             return False
 
         try:
-            Subscription.objects.get(user=request.user, category=category, is_active=True)
-
-            # 초기에는 결제 기능 x
-            # 나중에 사용하려면 아래 코드를 활성화하세요.
-            # if subscription.expiry_date < timezone.now():
-            #     subscription.is_active = False
-            #     subscription.save()
-            #     return False
-
+            Manager.objects.get(user=request.user, category=category)
             return True
+        except Manager.DoesNotExist:
+            try:
+                Subscription.objects.get(user=request.user, category=category, is_active=True)
 
-        except Subscription.DoesNotExist:
-            return False
+                # 초기에는 결제 기능 x
+                # 나중에 사용하려면 아래 코드를 활성화하세요.
+                # if subscription.expiry_date < timezone.now():
+                #     subscription.is_active = False
+                #     subscription.save()
+                #     return False
+
+                return True
+            except Subscription.DoesNotExist:
+                return False
