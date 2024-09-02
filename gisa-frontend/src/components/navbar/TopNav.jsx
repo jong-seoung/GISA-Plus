@@ -24,6 +24,7 @@ function TopNav() {
   const {
     is_authenticated = null,
     username = "",
+    managed = [],
     messages = [],
   } = useStatusContext();
 
@@ -115,7 +116,7 @@ function TopNav() {
       {is_authenticated !== null && (
         <Container>
           <Alert variant="info" className="mt-2">
-            Your username is <strong>{username}</strong>.
+            Your username is <strong>{username}{managed}</strong>.
           </Alert>
         </Container>
       )}

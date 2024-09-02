@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Card, Container, ListGroup } from "react-bootstrap";
+import { Card, Container, ListGroup, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import CategoryHeader from "./CategoryHeader";  
-import CategoryItem from "./CategoryItem";     
+import CategoryHeader from "./CategoryHeader";
+import CategoryItem from "./CategoryItem";
 import { makeRestApi } from "../../api";
+import { useStatusContext } from "../../contexts/StatusContext";
 
 function CommonCategoryList({ apiUrl, titleSuffix }) {
   const { categoryName } = useParams();
-  const VERSION_REST_API = makeRestApi(`${apiUrl}/?categoryName=${categoryName}`);
+  const VERSION_REST_API = makeRestApi(
+    `${apiUrl}/?categoryName=${categoryName}`
+  );
   const [categoryList, setCategoryList] = useState([]);
   const navigate = useNavigate();
+  const { managed = [undefined] } = useStatusContext();
+
+  const isManager = managed.includes(categoryName);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +32,7 @@ function CommonCategoryList({ apiUrl, titleSuffix }) {
     fetchData();
   }, []);
 
-  const handleClick = (version) => {
+  const handleClick = version => {
     navigate(`${version}/`);
   };
 
@@ -40,9 +46,21 @@ function CommonCategoryList({ apiUrl, titleSuffix }) {
               key={index}
               category={category}
               onClick={() => handleClick(category.version)}
+              isManager={isManager}
             />
           ))}
         </ListGroup>
+        {isManager && (
+          <ListGroup.Item
+            className="text-center mt-2 mb-2 fw-bold"
+            onClick={e => {
+              e.stopPropagation();
+              console.log(`추가 클릭됨:`);
+            }}
+          >
+            추가
+          </ListGroup.Item>
+        )}
       </Card>
     </Container>
   );
