@@ -7,7 +7,7 @@ import ProblemCard from "../../components/writing/ProblemCard";
 const ProblemList = () => {
   const { categoryName, version } = useParams();
   const [{ data: origProblem = undefined }] = useApiAxios(
-    `problem/api/problem?category=${categoryName}&version=${version}`
+    `problem/api/problem?categoryName=${categoryName}&version=${version}`
   );
   const [problem, setProblem] = useState([]);
   const [numStyle] = useState(["①", "②", "③", "④", "⑤"]);
