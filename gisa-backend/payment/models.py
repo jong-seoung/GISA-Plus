@@ -11,7 +11,7 @@ class Subscription(models.Model):
     purchased_at = models.DateTimeField(auto_now_add=True)
     expiry_date = models.DateTimeField()  # 만료일
     is_active = models.BooleanField(default=True)
-    id_manager = models.BooleanField(default=False)
+    is_manager = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.expiry_date:

@@ -10,7 +10,6 @@ from .models import Payment, Subscription
 @api_view(["POST"])
 def purchase_subscription(request):
     user = request.user
-    print(request.data)
     imp_uid = request.data.get("imp_uid")
     merchant_uid = request.data.get("merchant_uid")
     amount = request.data.get("amount")
