@@ -1,21 +1,40 @@
 from core.mixins import ActionBasedViewSetMixin
+from core.models import MainCategory
 from core.permissions import IsCategorySubscriber
 from problem.models import Problem, ProblemCategory
 from problem.serializers import ProblemCategorySerializer, ProblemListSerializer, ProblemSerializer
 from rest_framework import viewsets
-from rest_framework.generics import ListAPIView
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 
 
-class ProblemCategoryView(ListAPIView):
-    queryset = ProblemCategory.objects.all()
+class ProblemCategoryViewSet(ModelViewSet):
+    queryset = ProblemCategory.objects.all().order_by("-version")
     serializer_class = ProblemCategorySerializer
     permission_classes = [IsAuthenticated, IsCategorySubscriber]
 
-    def get_queryset(self, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         category_name = self.request.query_params.get("categoryName", None)
-        self.queryset = self.queryset.filter(main_category__name=category_name)
-        return self.queryset
+        queryset = self.get_queryset()
+
+        if category_name:
+            queryset = queryset.filter(main_category__name=category_name)
+
+        self.queryset = queryset
+        return super().list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        category_name = request.data.get("categoryName")
+
+        if not category_name:
+            raise ValidationError("categoryName 쿼리 파라미터가 필요합니다.")
+
+        main_category = MainCategory.objects.get(name=category_name)
+
+        request.data["main_category"] = main_category.id
+
+        return super().create(request, *args, **kwargs)
 
 
 class ProblemViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
