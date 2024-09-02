@@ -13,17 +13,24 @@ def check_object_permissions(self, category_name):
 
 class IsCategorySubscriber(BasePermission):
     def has_permission(self, request, view):
-        category_id = request.query_params.get("category_id")
-        category = MainCategory.objects.get(id=category_id)
+        categoryName = request.query_params.get("categoryName")
+
         try:
-            subscription = Subscription.objects.get(user=request.user, category=category, is_active=True)
+            category = MainCategory.objects.get(name=categoryName)
+        except MainCategory.DoesNotExist:
+            return False
+
+        try:
+            Subscription.objects.get(user=request.user, category=category, is_active=True)
+
             # 초기에는 결제 기능 x
+            # 나중에 사용하려면 아래 코드를 활성화하세요.
             # if subscription.expiry_date < timezone.now():
             #     subscription.is_active = False
             #     subscription.save()
             #     return False
-            if subscription.exist():
-                return True
+
             return True
+
         except Subscription.DoesNotExist:
             return False
