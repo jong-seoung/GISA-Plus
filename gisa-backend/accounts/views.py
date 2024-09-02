@@ -1,17 +1,19 @@
 # accounts/views.py
+from accounts.serializers import LoginSerializer, SignupSerializer
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from accounts.serializers import SignupSerializer, LoginSerializer
-from django.contrib.auth import login as auth_login, logout as auth_logout
+
 
 class SignupView(APIView):
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            auth_login(request, user)  # 회원가입 후 자동 로그인
+            auth_login(request, user, backend="django.contrib.auth.backends.ModelBackend")
             return Response({"message": "회원가입 성공 및 자동 로그인 완료"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
