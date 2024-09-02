@@ -1,5 +1,3 @@
-from datetime import timezone
-
 from core.models import MainCategory
 from payment.models import Subscription
 from rest_framework.exceptions import PermissionDenied
@@ -19,10 +17,13 @@ class IsCategorySubscriber(BasePermission):
         category = MainCategory.objects.get(id=category_id)
         try:
             subscription = Subscription.objects.get(user=request.user, category=category, is_active=True)
-            if subscription.expiry_date < timezone.now():
-                subscription.is_active = False
-                subscription.save()
-                return False
+            # 초기에는 결제 기능 x
+            # if subscription.expiry_date < timezone.now():
+            #     subscription.is_active = False
+            #     subscription.save()
+            #     return False
+            if subscription.exist():
+                return True
             return True
         except Subscription.DoesNotExist:
             return False
