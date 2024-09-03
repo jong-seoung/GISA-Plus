@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Col } from "react-bootstrap";
+import { Card, Col, Button } from "react-bootstrap";
 import ProblemTitle from "../wp/NumTitle";
 import ProblemAnswers from "./ProblemAnswers";
 import ProblemImage from "./ProblemImage";
@@ -11,6 +11,7 @@ const ProblemCard = ({
   answerStates,
   handleAnswer,
   imageStates,
+  isManager,
 }) => (
   <Col
     md={6}
@@ -19,15 +20,22 @@ const ProblemCard = ({
       position: "relative",
     }}
   >
-    <Card.Body style={{ position: "relative"}}>
-      <div style={{  zIndex: 0, display: 'flex', alignItems: 'center', position: 'relative' }}>
+    <Card.Body style={{ position: "relative" }}>
+      <div
+        style={{
+          zIndex: 0,
+          display: "flex",
+          alignItems: "center",
+          position: "relative",
+        }}
+      >
         {/* 이미지 컴포넌트 */}
         <ProblemImage
           imageState={imageStates[`${problemIndex}`]}
           problemIndex={problemIndex}
         />
         {/* 문제 제목 컴포넌트 */}
-        <div style={{ flex: 1, position: 'relative', zIndex: 1}}>
+        <div style={{ flex: 1, position: "relative", zIndex: 1 }}>
           <ProblemTitle num={problemItem.num} title={problemItem.title} />
         </div>
       </div>
@@ -47,6 +55,25 @@ const ProblemCard = ({
           </small>
         </Col>
       </div>
+      {isManager && (
+        <div>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            className="me-2"
+            onClick={() => (problemIndex)}
+          >
+            수정
+          </Button>
+          <Button
+            variant="outline-danger"
+            size="sm"
+            onClick={() => (problemIndex)}
+          >
+            삭제
+          </Button>
+        </div>
+      )}
     </Card.Body>
   </Col>
 );
