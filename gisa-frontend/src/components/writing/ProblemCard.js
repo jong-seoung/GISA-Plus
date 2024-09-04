@@ -39,6 +39,24 @@ const ProblemCard = ({
           <ProblemTitle num={problemItem.num} title={problemItem.title} />
         </div>
       </div>
+      {/* 이미지 컨테이너 */}
+      <div className="mt-2 mb-2">
+        <div className="w-100">
+          {problemItem.image_list &&
+            problemItem.image_list.map((imageItem, index) => (
+              <img
+                key={index} 
+                src={imageItem.image}
+                alt={`이미지 ${index}`} 
+                style={{
+                  width: "100%",
+                  height: "auto",
+                }}
+              />
+            ))}
+        </div>
+      </div>
+
       {/* 문제 답변 컴포넌트 */}
       <ProblemAnswers
         answers={problemItem.answer}
@@ -61,14 +79,14 @@ const ProblemCard = ({
             variant="outline-secondary"
             size="sm"
             className="me-2"
-            onClick={() => (problemIndex)}
+            onClick={() => problemIndex}
           >
             수정
           </Button>
           <Button
             variant="outline-danger"
             size="sm"
-            onClick={() => (problemIndex)}
+            onClick={() => problemIndex}
           >
             삭제
           </Button>

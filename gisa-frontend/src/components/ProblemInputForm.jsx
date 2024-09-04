@@ -1,65 +1,83 @@
 import React, { useState } from "react";
 import { Form, Button, InputGroup, Row, Col } from "react-bootstrap";
 
-const ProblemInputForm = ({ onSubmit, onCancel }) => {
+const ProblemInputForm = ({ onSubmit, onCancel, categoryName, version }) => {
   const [newProblem, setNewProblem] = useState({
     num: "",
     title: "",
     correct_rate: "",
     image_list: [],
-    answers: [
+    version: version,
+    answer: [
       { name: "", answer: false },
       { name: "", answer: false },
       { name: "", answer: false },
       { name: "", answer: false },
     ],
+    categoryName: categoryName,
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewProblem({ ...newProblem, [name]: value });
+  const handleInputChange = e => {
+    const { name, value, files } = e.target;
+
+    if (name === "image_list" && files) {
+      setNewProblem(prevState => ({
+        ...prevState,
+        image_list: Array.from(files),
+      }));
+    } else {
+      setNewProblem(prevState => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const handleAnswerChange = (index, value) => {
-    const updatedAnswers = newProblem.answers.map((answer, i) =>
+    const updatedanswer = newProblem.answer.map((answer, i) =>
       i === index ? { ...answer, name: value } : answer
     );
-    setNewProblem({ ...newProblem, answers: updatedAnswers });
+    setNewProblem({ ...newProblem, answer: updatedanswer });
   };
 
-  const handleCheckboxChange = (index) => {
-    const updatedAnswers = newProblem.answers.map((answer, i) =>
-      i === index ? { ...answer, answer: !answer.answer } : { ...answer, answer: false }
+  const handleCheckboxChange = index => {
+    const updatedanswer = newProblem.answer.map((answer, i) =>
+      i === index
+        ? { ...answer, answer: !answer.answer }
+        : { ...answer, answer: false }
     );
-    setNewProblem({ ...newProblem, answers: updatedAnswers });
+    setNewProblem({ ...newProblem, answer: updatedanswer });
   };
 
   const handleAddAnswer = () => {
     setNewProblem({
       ...newProblem,
-      answers: [...newProblem.answers, { name: "", answer: false }],
+      answer: [...newProblem.answer, { name: "", answer: false }],
     });
   };
 
-  const handleRemoveAnswer = (index) => {
-    const updatedAnswers = newProblem.answers.filter((_, i) => i !== index);
-    setNewProblem({ ...newProblem, answers: updatedAnswers });
+  const handleRemoveAnswer = index => {
+    const updatedanswer = newProblem.answer.filter((_, i) => i !== index);
+    setNewProblem({ ...newProblem, answer: updatedanswer });
   };
 
   const handleSubmit = () => {
     onSubmit(newProblem);
-    setNewProblem({
-      num: "",
-      title: "",
-      image_list: [],
-      correct_rate: "",
-      answers: [
-        { name: "", answer: false },
-        { name: "", answer: false },
-        { name: "", answer: false },
-        { name: "", answer: false },
-      ],
-    });
+    // 상태 초기화를 원할 경우 이 부분을 활성화하십시오.
+    // setNewProblem({
+    //   num: "",
+    //   title: "",
+    //   correct_rate: "",
+    //   image_list: [],
+    //   answer: [
+    //     { name: "", answer: false },
+    //     { name: "", answer: false },
+    //     { name: "", answer: false },
+    //     { name: "", answer: false },
+    //   ],
+    //   categoryName: categoryName,
+    //   version: version,
+    // });
   };
 
   return (
@@ -94,7 +112,12 @@ const ProblemInputForm = ({ onSubmit, onCancel }) => {
         <Form.Label className="mb-0" style={{ width: "100px" }}>
           이미지
         </Form.Label>
-        <Form.Control type="file" name="image_list" multiple />
+        <Form.Control
+          type="file"
+          name="image_list"
+          onChange={handleInputChange}
+          multiple
+        />
       </Form.Group>
       <Form.Group className="d-flex align-items-center mt-3">
         <Form.Label className="mb-0" style={{ width: "100px" }}>
@@ -110,7 +133,7 @@ const ProblemInputForm = ({ onSubmit, onCancel }) => {
         />
       </Form.Group>
 
-      {newProblem.answers.map((answer, index) => (
+      {newProblem.answer.map((answer, index) => (
         <Form.Group key={index} className="d-flex align-items-center mt-3">
           <Form.Label className="mb-0" style={{ width: "100px" }}>{`보기 ${
             index + 1
@@ -123,10 +146,10 @@ const ProblemInputForm = ({ onSubmit, onCancel }) => {
             <Form.Control
               type="text"
               value={answer.name}
-              onChange={(e) => handleAnswerChange(index, e.target.value)}
+              onChange={e => handleAnswerChange(index, e.target.value)}
             />
           </InputGroup>
-          {newProblem.answers.length > 1 && (
+          {newProblem.answer.length > 1 && (
             <Button
               variant="danger"
               className="ms-2"
@@ -157,11 +180,7 @@ const ProblemInputForm = ({ onSubmit, onCancel }) => {
               </Button>
             </Col>
             <Col sm={6}>
-              <Button
-                className="w-100"
-                variant="secondary"
-                onClick={onCancel}
-              >
+              <Button className="w-100" variant="secondary" onClick={onCancel}>
                 취소
               </Button>
             </Col>
