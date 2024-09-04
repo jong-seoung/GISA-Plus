@@ -5,7 +5,7 @@ from rest_framework import serializers
 class ProblemCategoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProblemCategory
-        fields = ["id", "name"]
+        fields = ["id", "version"]
 
 
 class ProblemCategorySerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class ProblemCategorySerializer(serializers.ModelSerializer):
 class ProblemAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProblemAnswer
-        fields = "__all__"
+        fields = ["name", "answer"]
 
 
 class ProblemImageSerializer(serializers.ModelSerializer):
@@ -31,13 +31,30 @@ class ProblemImageSerializer(serializers.ModelSerializer):
 
 
 class ProblemSerializer(serializers.ModelSerializer):
+    version = serializers.CharField(write_only=True)
+    answer = ProblemAnswerSerializer(many=True, write_only=True)
+    images = serializers.ListField(child=serializers.ImageField(), required=False)
+
     class Meta:
         model = Problem
-        fields = ["id", "title"]
+        fields = ["id", "num", "title", "correct_rate", "version", "answer", "images"]
 
     @staticmethod
     def get_optimized_queryset():
         return Problem.objects.all()
+
+    def create(self, validated_data):
+        category_data = validated_data.pop("version")
+        answers_data = validated_data.pop("answer")
+        images_data = validated_data.pop("images", [])
+
+        category = ProblemCategory.objects.get(version=category_data)
+        problem = Problem.objects.create(category=category, **validated_data)
+        for answer_data in answers_data:
+            ProblemAnswer.objects.create(problem=problem, **answer_data)
+        for image_data in images_data:
+            ProblemPhoto.objects.create(problem=problem, image=image_data)
+        return problem
 
 
 class ProblemListSerializer(serializers.ModelSerializer):

@@ -28,7 +28,7 @@ class Problem(models.Model):
 
 
 class ProblemAnswer(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     answer = models.BooleanField(default=False)
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
 

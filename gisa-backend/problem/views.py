@@ -49,7 +49,7 @@ class ProblemViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
     serializer_class_map = {
         "list": ProblemListSerializer,
         # "retrieve": ProblemDetailSerializer,
-        # "create": ProblemSerializer,
+        "create": ProblemSerializer,
         # "update": ProblemSerializer,
         # "partial_update": ProblemSerializer,
     }
@@ -66,3 +66,15 @@ class ProblemViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
         queryset = queryset.filter(category__version=version)
 
         return queryset
+
+    def create(self, request, *args, **kwargs):
+        print("Request Data:", self.request.data)
+        # Serializer를 인스턴스화하여 데이터를 전달
+        serializer = self.get_serializer(data=request.data)
+        # 유효성 검사 수행
+        if not serializer.is_valid():
+            # 유효성 검사 실패 시 오류 메시지 출력
+            print("Validation Errors:", serializer.errors)
+            # 유효성 검사 실패 시 적절한 응답을 반환
+
+        return super().create(request, *args, **kwargs)
