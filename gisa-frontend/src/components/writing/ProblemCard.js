@@ -1,8 +1,9 @@
 import React from "react";
 import { Card, Col, Button } from "react-bootstrap";
-import ProblemTitle from "../wp/NumTitle";
+import ProblemTitle from "../writing/ProblemNumTitle";
 import ProblemAnswers from "./ProblemAnswers";
-import ProblemImage from "./ProblemImage";
+import EditButtons from "../button/EditButton";
+import DeleteButtons from "../button/DeleteButton";
 
 const ProblemCard = ({
   problemItem,
@@ -12,15 +13,18 @@ const ProblemCard = ({
   handleAnswer,
   imageStates,
   isManager,
+  handleEdit,
+  handleDelete,
 }) => (
   <Col
     md={6}
     style={{
       borderRight: problemIndex % 2 === 0 ? "1px solid #ccc" : "none",
+      paddingLeft: problemIndex % 2 === 0 ? "20px" : "none",
       position: "relative",
     }}
   >
-    <Card.Body style={{ position: "relative" }}>
+    <Card.Body>
       <div
         style={{
           zIndex: 0,
@@ -29,14 +33,14 @@ const ProblemCard = ({
           position: "relative",
         }}
       >
-        {/* 이미지 컴포넌트 */}
-        <ProblemImage
-          imageState={imageStates[`${problemIndex}`]}
-          problemIndex={problemIndex}
-        />
         {/* 문제 제목 컴포넌트 */}
-        <div style={{ flex: 1, position: "relative", zIndex: 1 }}>
-          <ProblemTitle num={problemItem.num} title={problemItem.title} />
+        <div style={{ position: "relative" }} className="w-100">
+          <ProblemTitle
+            problemIndex={problemIndex}
+            imageStates={imageStates}
+            num={problemItem.num}
+            title={problemItem.title}
+          />
         </div>
       </div>
       {/* 이미지 컨테이너 */}
@@ -45,9 +49,9 @@ const ProblemCard = ({
           {problemItem.image_list &&
             problemItem.image_list.map((imageItem, index) => (
               <img
-                key={index} 
+                key={index}
                 src={imageItem.image}
-                alt={`이미지 ${index}`} 
+                alt={`이미지 ${index}`}
                 style={{
                   width: "100%",
                   height: "auto",
@@ -74,23 +78,10 @@ const ProblemCard = ({
         </Col>
       </div>
       {isManager && (
-        <div>
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            className="me-2"
-            onClick={() => problemIndex}
-          >
-            수정
-          </Button>
-          <Button
-            variant="outline-danger"
-            size="sm"
-            onClick={() => problemIndex}
-          >
-            삭제
-          </Button>
-        </div>
+        <>
+          <EditButtons onEdit={() => handleEdit(problemIndex)} />
+          <DeleteButtons onDelete={() => handleDelete(problemIndex)} />
+        </>
       )}
     </Card.Body>
   </Col>
