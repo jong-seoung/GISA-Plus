@@ -27,17 +27,18 @@ class ProblemAnswerSerializer(serializers.ModelSerializer):
 class ProblemImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProblemPhoto
-        fields = ["image"]
+        fields = ["id", "image"]
 
 
 class ProblemSerializer(serializers.ModelSerializer):
     version = serializers.CharField(write_only=True)
     answer = ProblemAnswerSerializer(many=True, write_only=True)
     images = serializers.ListField(child=serializers.ImageField(), required=False)
+    remove_image = serializers.ListField(required=False)
 
     class Meta:
         model = Problem
-        fields = ["id", "num", "title", "correct_rate", "version", "answer", "images"]
+        fields = ["id", "num", "title", "correct_rate", "version", "answer", "images", "remove_image"]
 
     @staticmethod
     def get_optimized_queryset():
@@ -55,6 +56,27 @@ class ProblemSerializer(serializers.ModelSerializer):
         for image_data in images_data:
             ProblemPhoto.objects.create(problem=problem, image=image_data)
         return problem
+
+    def update(self, instance, validated_data):  # 문제의 기존 데이터를 업데이트할 필드 추출
+        answers_data = validated_data.pop("answer")
+        images_data = validated_data.pop("images", [])
+        remove_image = validated_data.pop("remove_image", [])
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        ProblemAnswer.objects.filter(problem=instance).delete()
+        for answer_data in answers_data:
+            ProblemAnswer.objects.create(problem=instance, **answer_data)
+
+        if remove_image:
+            ProblemPhoto.objects.filter(id__in=remove_image).delete()
+
+        for image_data in images_data:
+            ProblemPhoto.objects.create(problem=instance, image=image_data)
+
+        instance.save()
+        return instance
 
 
 class ProblemListSerializer(serializers.ModelSerializer):
