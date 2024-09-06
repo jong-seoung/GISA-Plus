@@ -23,11 +23,13 @@ class RestoreCategory(models.Model):
 class Restore(models.Model):
     num = models.SmallIntegerField()
     title = models.CharField(max_length=100)
+    content = models.TextField()
     category = models.ForeignKey(RestoreCategory, on_delete=models.CASCADE, related_name="category_restore")
 
 
 class RestoreAnswer(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    num = models.SmallIntegerField()
+    name = models.CharField(max_length=100)
     restore = models.ForeignKey(Restore, on_delete=models.CASCADE)
 
     def __str__(self):

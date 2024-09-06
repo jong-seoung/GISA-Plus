@@ -1,12 +1,11 @@
+from core.mixins import ActionBasedViewSetMixin
 from core.models import MainCategory
 from core.permissions import IsCategorySubscriber
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from restore.models import Restore, RestoreCategory
-from restore.serializers import RestoreCategoryListSerializer, RestoreListSerializer
+from restore.serializers import RestoreCategoryListSerializer, RestoreListSerializer, RestoreSerializer
 
 
 class RestoreCategoryListView(ModelViewSet):
@@ -37,9 +36,15 @@ class RestoreCategoryListView(ModelViewSet):
         return super().create(request, *args, **kwargs)
 
 
-class RestoreView(ListAPIView):
+class RestoreView(ActionBasedViewSetMixin, ModelViewSet):
     queryset = Restore.objects.all()
+    queryset_map = {"partial_update": RestoreSerializer.get_optimized_queryset(), "destroy": Restore.objects.all()}
     serializer_class = RestoreListSerializer
+    serializer_class_map = {
+        "list": RestoreListSerializer,
+        "create": RestoreSerializer,
+        "partial_update": RestoreSerializer,
+    }
     permission_classes = [IsAuthenticated, IsCategorySubscriber]
 
     def list(self, request, *args, **kwargs):
@@ -48,6 +53,8 @@ class RestoreView(ListAPIView):
 
         self.queryset = Restore.objects.filter(category__main_category__name=category_name, category__version=version)
 
-        serializer = self.serializer_class(self.queryset, many=True)
+        return super().list(request, *args, **kwargs)
 
-        return Response(serializer.data)
+    def update(self, request, *args, **kwargs):
+        print(request.data)
+        return super().update(request, *args, **kwargs)
