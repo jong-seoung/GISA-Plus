@@ -1,15 +1,20 @@
 import React from "react";
 import { Row } from "react-bootstrap";
 
-const QuizImage = ({ imageUrl }) => (
+const QuizImage = ({ restoreItem }) => (
   <Row className="text-center">
-    {imageUrl ? (
-      <img
-        src={imageUrl}
-        alt="퀴즈 이미지"
-        style={{ width: "90%", height: "auto" }}
-        className="mx-auto d-block"
-      />
+    {restoreItem.image_list ? (
+      restoreItem.image_list.map((imageItem, index) => (
+        <img
+          key={index}
+          src={imageItem.image}
+          alt={`이미지 ${index}`}
+          style={{
+            width: "100%",
+            height: "auto",
+          }}
+        />
+      ))
     ) : (
       <p></p>
     )}

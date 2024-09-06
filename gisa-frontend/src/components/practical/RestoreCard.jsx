@@ -1,41 +1,49 @@
-import React from 'react';
-import { Card, Row, Col } from 'react-bootstrap';
-import RestoreTitle from '../wp/NumTitle';
-import RestoreImage from './Image';
-import RestoreAnswer from './RestoreAnswer';
+import React from "react";
+import { Card, Row, Col } from "react-bootstrap";
+import RestoreTitle from "../wp/NumTitle";
+import RestoreImage from "./Image";
+import RestoreAnswer from "./RestoreAnswer";
+import Restorecontent from "./RestoreContent";
+import EditButtons from "../button/EditButton";
+import DeleteButtons from "../button/DeleteButton";
 
 const RestoreCard = ({
   restoreItem,
   index,
   showAnswers,
-  handleShowAnswers
+  handleShowAnswers,
+  isManager,
+  handleEdit,
+  handleDelete,
 }) => (
   <Card.Body>
-    <Row className="align-items-center">
+    <Row className="align-items-center mb-5">
       <Col xs={1} />
       <Col xs={10}>
-        <Row className="mt-4">
-          <RestoreTitle num={restoreItem.num} title={restoreItem.title} />
+        <Row>
+          <Col className="mt-3">
+            <RestoreTitle num={restoreItem.num} title={restoreItem.title} />
 
-          <RestoreImage
-            imageUrl={
-              restoreItem.image_list && restoreItem.image_list.length > 0
-                ? restoreItem.image_list[0].image
-                : null
-            }
-          />
+            {isManager && (
+              <>
+                <EditButtons onEdit={() => handleEdit(index)} />
+                <DeleteButtons onDelete={() => handleDelete(index)} />
+              </>
+            )}
+          </Col>
+
+          <RestoreImage restoreItem={restoreItem} />
+
+          <Restorecontent content={restoreItem.content} />
 
           {restoreItem.answer && restoreItem.answer.length > 0 ? (
-            restoreItem.answer.map((answerItem, idx) => (
-              <RestoreAnswer
-                key={idx}
-                answerItem={answerItem}
-                showAnswer={showAnswers[`${index}-${idx}`]}
-                handleShowAnswer={handleShowAnswers}
-                index={index}
-                idx={idx}
-              />
-            ))
+            <RestoreAnswer
+              key={index}
+              restoreItem={restoreItem}
+              showAnswer={showAnswers[`${index}`]}
+              handleShowAnswer={handleShowAnswers}
+              index={index}
+            />
           ) : (
             <li>
               <small>정답이 지정되지 않았습니다. 문의 부탁드립니다.</small>
