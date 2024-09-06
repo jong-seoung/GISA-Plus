@@ -2,12 +2,7 @@ from problem.models import Problem, ProblemAnswer, ProblemCategory, ProblemPhoto
 from rest_framework import serializers
 
 
-class ProblemCategoryListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProblemCategory
-        fields = ["id", "version"]
-
-
+# 카테고리 목록, 생성, 수정
 class ProblemCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProblemCategory
@@ -57,7 +52,7 @@ class ProblemSerializer(serializers.ModelSerializer):
             ProblemPhoto.objects.create(problem=problem, image=image_data)
         return problem
 
-    def update(self, instance, validated_data):  # 문제의 기존 데이터를 업데이트할 필드 추출
+    def update(self, instance, validated_data):
         answers_data = validated_data.pop("answer")
         images_data = validated_data.pop("images", [])
         remove_image = validated_data.pop("remove_image", [])
@@ -94,16 +89,3 @@ class ProblemListSerializer(serializers.ModelSerializer):
     def get_answer(self, obj):
         answers = obj.problemanswer_set.order_by("?")
         return ProblemAnswerSerializer(answers, many=True).data
-
-
-class ProblemDetailSerializer(serializers.ModelSerializer):
-    answer = ProblemAnswerSerializer(source="problemanswer_set", many=True)
-    image_list = ProblemImageSerializer(source="problemphoto_set", many=True)
-
-    class Meta:
-        model = Problem
-        fields = ["id", "image_list", "title", "answer"]
-
-    @staticmethod
-    def get_optimized_queryset():
-        return Problem.objects.all()
