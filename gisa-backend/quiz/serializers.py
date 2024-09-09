@@ -1,3 +1,4 @@
+from core.models import MainCategory
 from quiz.models import Answer, Category, Photo, Quiz, QuizSave, Unit
 from rest_framework import serializers
 
@@ -25,25 +26,80 @@ class UnitSerializer(serializers.ModelSerializer):
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = "__all__"
+        fields = ["id", "num", "name"]
 
 
 class QuizImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
-        fields = ["image"]
+        fields = ["id", "image"]
 
 
 class QuizSerializer(serializers.ModelSerializer):
-    unit = UnitSerializer()
+    categoryName = serializers.CharField(write_only=True)
+    version = serializers.CharField(write_only=True)
+    unit_name = serializers.CharField(write_only=True)
+    answer = AnswerSerializer(many=True, write_only=True)
+    images = serializers.ListField(child=serializers.ImageField(), required=False)
+    remove_image = serializers.ListField(required=False)
 
     class Meta:
         model = Quiz
-        fields = ["id", "unit", "title", "content"]
+        fields = ["id", "title", "content", "categoryName", "unit_name", "version", "answer", "images", "remove_image"]
 
     @staticmethod
     def get_optimized_queryset():
         return Quiz.objects.all()
+
+    def create(self, validated_data):
+        answers_data = validated_data.pop("answer")
+        images_data = validated_data.pop("images", [])
+        unit_name = validated_data.pop("unit_name", "")
+        version = validated_data.pop("version", "")
+        main_category_name = validated_data.pop("categoryName", "")
+
+        main_category = MainCategory.objects.get(name=main_category_name)
+        category = Category.objects.get(main_category=main_category, version=version)
+        unit = Unit.objects.get(category=category, name=unit_name)
+        quiz = Quiz.objects.create(unit=unit, **validated_data)
+
+        for answer_data in answers_data:
+            Answer.objects.create(quiz=quiz, **answer_data)
+
+        for image_data in images_data:
+            Photo.objects.create(quiz=quiz, image=image_data)
+        return quiz
+
+    def update(self, instance, validated_data):
+        answers_data = validated_data.pop("answer", "")
+        images_data = validated_data.pop("images", [])
+        remove_image = validated_data.pop("remove_image", [])
+
+        unit_name = validated_data.pop("unit_name", "")
+        version = validated_data.pop("version", "")
+        main_category_name = validated_data.pop("categoryName", "")
+
+        main_category = MainCategory.objects.get(name=main_category_name)
+        category = Category.objects.get(main_category=main_category, version=version)
+        unit = Unit.objects.get(category=category, name=unit_name)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.unit = unit
+
+        Answer.objects.filter(quiz=instance).delete()
+        for answer_data in answers_data:
+            Answer.objects.create(quiz=instance, **answer_data)
+
+        if remove_image:
+            Photo.objects.filter(id__in=remove_image).delete()
+
+        for image_data in images_data:
+            Photo.objects.create(quiz=instance, image=image_data)
+
+        instance.save()
+        return instance
 
 
 class QuizListSerializer(serializers.ModelSerializer):
@@ -61,12 +117,21 @@ class QuizListSerializer(serializers.ModelSerializer):
 
 class QuizDetailSerializer(serializers.ModelSerializer):
     unit = UnitSerializer()
+    # unit_list = serializers.ListField(UnitSerializer, read_only=True)
     answer = AnswerSerializer(source="answer_set", many=True)
     image_list = QuizImageSerializer(source="photo_set", many=True)
 
     class Meta:
         model = Quiz
-        fields = ["id", "unit", "image_list", "title", "content", "answer"]
+        fields = ["id", "unit", "image_list", "title", "content", "answer", "unit"]
+
+    # def get_unit_list():
+    #     pass
+    # 현재 Quiz 모델의 unit 외래키를 가지고 오기
+    # 가지고온 Unit 모델의 name과 category외래키 가지고오기
+    # 가지고온 Category 모델의 version과 Maincategory 외래키 가지고오기
+    # Category 모델에서 maincategory가 Maincategory 인 값들 version 목록 가지고오기
+    # version 별 unit.name 가지고오기
 
     @staticmethod
     def get_optimized_queryset():
@@ -78,3 +143,11 @@ class QuizSaveSerializer(serializers.ModelSerializer):
         model = QuizSave
         fields = ["id", "saved_at"]
         read_only_fields = ["saved_at"]
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    unit = UnitSerializer(many=True, source="category_unit")
+
+    class Meta:
+        model = Category
+        fields = ["id", "version", "unit"]

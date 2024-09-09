@@ -26,7 +26,7 @@ class Unit(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
-        return f"{self.category.name} - {self.name}"
+        return f"{self.category.main_category.name} - {self.category.version} - {self.name}"
 
 
 class Quiz(TimeStampedModel):

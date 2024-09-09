@@ -1,27 +1,45 @@
 from core.mixins import ActionBasedViewSetMixin
 from core.permissions import IsCategorySubscriber
-from quiz.models import Quiz, QuizSave
-from quiz.serializers import QuizDetailSerializer, QuizListSerializer, QuizSaveSerializer, QuizSerializer
+from quiz.models import Category, Quiz, QuizSave
+from quiz.serializers import (
+    CategorySerializer,
+    QuizDetailSerializer,
+    QuizListSerializer,
+    QuizSaveSerializer,
+    QuizSerializer,
+)
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    queryset_map = {
+        # "retrieve": QuizDetailSerializer.get_optimized_queryset(),
+        # "partial_update": QuizSerializer.get_optimized_queryset(),
+        # "destroy": Quiz.objects.all(),
+    }
+    serializer_class = CategorySerializer
+    serializer_class_map = {
+        # "retrieve": QuizDetailSerializer,
+        # "create": QuizSerializer,
+        # "partial_update": QuizSerializer,
+    }
+    permission_classes = [IsAuthenticated, IsCategorySubscriber]
+
+
 class QuizModelViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     queryset_map = {
-        "list": QuizListSerializer.get_optimized_queryset(),
         "retrieve": QuizDetailSerializer.get_optimized_queryset(),
-        "update": QuizSerializer.get_optimized_queryset(),
         "partial_update": QuizSerializer.get_optimized_queryset(),
         "destroy": Quiz.objects.all(),
     }
     serializer_class = QuizSerializer
     serializer_class_map = {
-        "list": QuizListSerializer,
         "retrieve": QuizDetailSerializer,
         "create": QuizSerializer,
-        "update": QuizSerializer,
         "partial_update": QuizSerializer,
     }
     permission_classes = [IsAuthenticated, IsCategorySubscriber]
