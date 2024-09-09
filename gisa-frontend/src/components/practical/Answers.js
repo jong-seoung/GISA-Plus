@@ -27,11 +27,11 @@ const QuizAnswers = ({
     <Row className="text-center mt-3">
       {showAnswers ? (
         quiz.is_saved ? (
-          <Button variant="danger" onClick={() => handleCancelSave({ quiz })}>
+          <Button variant="outline-danger" onClick={() => handleCancelSave({ quiz })}>
             저장 취소
           </Button>
         ) : (
-          <Button variant="primary" onClick={() => handleSave({ quiz })}>
+          <Button variant="outline-primary" onClick={() => handleSave({ quiz })}>
             저장
           </Button>
         )

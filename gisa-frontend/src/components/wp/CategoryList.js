@@ -99,6 +99,7 @@ function CommonCategoryList({ apiUrl, titleSuffix }) {
           <ListGroup.Item
             className="text-center mt-2 mb-2 fw-bold"
             onClick={() => addVersion()}
+            variant="outline-primary"
           >
             추가
           </ListGroup.Item>

@@ -207,7 +207,7 @@ const ProblemModal = ({
                       }}
                     />
                     <Button
-                      variant="danger"
+                      variant="outline-danger"
                       onClick={() => handleImageRemove(index)}
                     >
                       X
@@ -243,7 +243,7 @@ const ProblemModal = ({
               </InputGroup>
               {newProblem.answer.length > 1 && (
                 <Button
-                  variant="danger"
+                  variant="outline-danger"
                   className="ms-2"
                   onClick={() => handleRemoveAnswer(index)}
                 >
@@ -253,16 +253,16 @@ const ProblemModal = ({
             </Form.Group>
           ))}
 
-          <Button variant="primary" className="mt-3" onClick={handleAddAnswer}>
+          <Button variant="outline-primary" className="mt-3" onClick={handleAddAnswer}>
             보기 추가
           </Button>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
+        <Button variant="outline-secondary" onClick={onHide}>
           취소
         </Button>
-        <Button variant="primary" onClick={() => handleSubmit(newProblem, isEditMode)}>
+        <Button variant="outline-primary" onClick={() => handleSubmit(newProblem, isEditMode)}>
           {isEditMode ? "수정" : "저장"}
         </Button>
       </Modal.Footer>
