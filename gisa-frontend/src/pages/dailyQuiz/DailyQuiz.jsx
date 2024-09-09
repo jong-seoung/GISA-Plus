@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useApiAxios, makeRestApi } from "../../api";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import QuizHeader from "../../components/practical/QuizHeader";
 import QuizImage from "../../components/practical/Image";
@@ -16,6 +16,7 @@ import QuizInputModal from "../../components/practical/QuizInputModal";
 const SAVE_REST_API = makeRestApi("quiz/api/save/");
 
 function DailyQuiz() {
+  const navigate = useNavigate();
   const { categoryName } = useParams();
   const [{ data: origQuiz = undefined, loading }, refetch] = useApiAxios(
     `quiz/api/quiz/0?categoryName=${categoryName}`
@@ -140,6 +141,10 @@ function DailyQuiz() {
     setSelectedQuiz(prev => ({ ...prev, [field]: value }));
   };
 
+  const pageChange = () => {
+    navigate(`/${categoryName}/quiz/manager`);
+  };
+
   if (loading || !quiz || !quiz.unit || !quiz.unit.category) {
     return <p></p>;
   }
@@ -162,6 +167,14 @@ function DailyQuiz() {
                   <QuizTitle title={quiz.title} />
                   {isManager && (
                     <div className="mb-3">
+                      <Button
+                        variant="outline-success"
+                        size="sm"
+                        className="me-2"
+                        onClick={() => pageChange()}
+                      >
+                        관리
+                      </Button>
                       <Button
                         variant="outline-success"
                         size="sm"

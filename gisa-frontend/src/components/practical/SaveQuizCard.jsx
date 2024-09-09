@@ -2,7 +2,7 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 
-const QuizCard = ({ quizItem, onClick }) => (
+const QuizCard = ({ quizItem,categoryName, onClick }) => (
   <Col md={3} onClick={() => onClick(quizItem)}>
     <Card className="mb-4">
       <Card.Img variant="top" src="holder.js/100px160" />
@@ -12,7 +12,7 @@ const QuizCard = ({ quizItem, onClick }) => (
       </Card.Body>
       <Card.Footer>
         <small className="text-muted">
-          {quizItem.unit.category.name} - {quizItem.unit.name}
+          {categoryName} - {quizItem.unit.name}
         </small>
       </Card.Footer>
     </Card>

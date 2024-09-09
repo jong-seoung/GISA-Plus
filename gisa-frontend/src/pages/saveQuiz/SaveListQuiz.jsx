@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeRestApi, useApiAxios } from "../../api";
 import { useNavigate } from "react-router-dom";
 import QuizList from "../../components/practical/SaveQuizList";
+import { useParams } from "react-router-dom";
 
 const SAVELIST_REST_API = makeRestApi("quiz/api/save");
 
@@ -11,6 +12,7 @@ function SaveQuizList() {
   );
   const [quiz, setQuiz] = useState([]);
   const navigate = useNavigate();
+  const { categoryName } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +34,7 @@ function SaveQuizList() {
   };
 
   return (
-    <QuizList quizzes={quiz} onQuizClick={handleQuizClick} />
+    <QuizList quizzes={quiz} categoryName={categoryName} onQuizClick={handleQuizClick} />
   );
 }
 
