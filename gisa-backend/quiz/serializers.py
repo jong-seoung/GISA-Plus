@@ -3,24 +3,35 @@ from quiz.models import Answer, Category, Photo, Quiz, QuizSave, Unit
 from rest_framework import serializers
 
 
-class CategoryListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ["id", "name"]
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = "__all__"
-
-
 class UnitSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
-
     class Meta:
         model = Unit
         fields = ["name", "category"]
+        depth = 1
+
+
+class BasicUnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Unit
+        fields = "__all__"
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    unit = BasicUnitSerializer(many=True, source="category_unit", read_only=True)
+    category_name = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Category
+        fields = ["id", "version", "unit", "category_name"]
+
+    @staticmethod
+    def get_optimized_queryset():
+        return Quiz.objects.all()
+
+    def create(self, validated_data):
+        category_name = validated_data.pop("category_name", "")
+        validated_data["main_category"] = MainCategory.objects.get(name=category_name)
+        return super().create(validated_data)
 
 
 class AnswerSerializer(serializers.ModelSerializer):
@@ -143,11 +154,3 @@ class QuizSaveSerializer(serializers.ModelSerializer):
         model = QuizSave
         fields = ["id", "saved_at"]
         read_only_fields = ["saved_at"]
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    unit = UnitSerializer(many=True, source="category_unit")
-
-    class Meta:
-        model = Category
-        fields = ["id", "version", "unit"]

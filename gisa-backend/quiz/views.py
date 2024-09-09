@@ -1,7 +1,8 @@
 from core.mixins import ActionBasedViewSetMixin
 from core.permissions import IsCategorySubscriber
-from quiz.models import Category, Quiz, QuizSave
+from quiz.models import Category, Quiz, QuizSave, Unit
 from quiz.serializers import (
+    BasicUnitSerializer,
     CategorySerializer,
     QuizDetailSerializer,
     QuizListSerializer,
@@ -13,19 +14,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
+class UnitViewSet(viewsets.ModelViewSet):
+    queryset = Unit.objects.all()
+    serializer_class = BasicUnitSerializer
+
+    permission_classes = [IsAuthenticated, IsCategorySubscriber]
+
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
-    queryset_map = {
-        # "retrieve": QuizDetailSerializer.get_optimized_queryset(),
-        # "partial_update": QuizSerializer.get_optimized_queryset(),
-        # "destroy": Quiz.objects.all(),
-    }
     serializer_class = CategorySerializer
-    serializer_class_map = {
-        # "retrieve": QuizDetailSerializer,
-        # "create": QuizSerializer,
-        # "partial_update": QuizSerializer,
-    }
+
     permission_classes = [IsAuthenticated, IsCategorySubscriber]
 
 
