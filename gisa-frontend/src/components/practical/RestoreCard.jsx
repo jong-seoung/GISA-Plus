@@ -21,7 +21,7 @@ const RestoreCard = ({
       <Col xs={1} />
       <Col xs={10}>
         <Row>
-          <Col className="mt-3">
+          <Col className="m-3">
             <RestoreTitle num={restoreItem.num} title={restoreItem.title} />
 
             {isManager && (
