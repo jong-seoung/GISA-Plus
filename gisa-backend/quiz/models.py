@@ -40,7 +40,7 @@ class Quiz(TimeStampedModel):
 
 class Answer(models.Model):
     num = models.SmallIntegerField()
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
 
     def __str__(self):
