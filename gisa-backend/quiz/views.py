@@ -1,5 +1,8 @@
+import random
+
 from core.mixins import ActionBasedViewSetMixin
 from core.permissions import IsCategorySubscriber
+from django_filters.rest_framework import DjangoFilterBackend
 from quiz.models import Category, Quiz, QuizSave, Unit
 from quiz.serializers import (
     BasicUnitSerializer,
@@ -9,75 +12,99 @@ from quiz.serializers import (
     QuizSaveSerializer,
     QuizSerializer,
 )
-from rest_framework import status, viewsets
+from rest_framework import status
+from rest_framework.filters import SearchFilter
+from rest_framework.generics import ListAPIView
+from rest_framework.mixins import (
+    CreateModelMixin,
+    DestroyModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 
-class UnitViewSet(viewsets.ModelViewSet):
+class QuizPagination(PageNumberPagination):
+    page_size = 10
+
+
+# Unit 뷰 - Create, Update, Delete만 지원
+class UnitViewSet(GenericViewSet, CreateModelMixin, UpdateModelMixin, DestroyModelMixin):
     queryset = Unit.objects.all()
     serializer_class = BasicUnitSerializer
 
     permission_classes = [IsAuthenticated, IsCategorySubscriber]
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+# Category 뷰 - Create, List, Update, Destory
+class CategoryViewSet(GenericViewSet, CreateModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
     permission_classes = [IsAuthenticated, IsCategorySubscriber]
 
 
-class QuizModelViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
+# 데일리 퀴즈
+class QuizlListView(ListAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizDetailSerializer
+
+    permission_classes = [IsAuthenticated, IsCategorySubscriber]
+
+    def list(self, request, *args, **kwargs):
+        request.user
+        category_name = request.query_params.get("categoryName")
+        exclude_id = request.query_params.get("exclude_id", None)
+
+        if not category_name:
+            return Response({"error": "categoryName parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        quiz = Quiz.objects.filter(unit__category__main_category__name=category_name).exclude(id=exclude_id)
+
+        count = quiz.count()
+
+        if count == 0:
+            return None
+
+        random_index = random.randint(0, count - 1) if count > 1 else 0
+
+        selected_quiz = quiz[random_index]
+        serializer = self.get_serializer(selected_quiz)
+
+        return Response(serializer.data)
+
+
+# 데일리 퀴즈 관리 - Create, List, Retrieve, Update, Destory
+class QuizModelViewSet(ActionBasedViewSetMixin, ModelViewSet):
     queryset = Quiz.objects.all()
     queryset_map = {
         "retrieve": QuizDetailSerializer.get_optimized_queryset(),
-        "partial_update": QuizSerializer.get_optimized_queryset(),
-        "destroy": Quiz.objects.all(),
+        #     "partial_update": QuizSerializer.get_optimized_queryset(),
+        "list": QuizListSerializer.get_optimized_queryset(),
+        #     "destroy": Quiz.objects.all(),
     }
     serializer_class = QuizSerializer
     serializer_class_map = {
         "retrieve": QuizDetailSerializer,
-        "create": QuizSerializer,
-        "partial_update": QuizSerializer,
+        "list": QuizListSerializer,
+        #     "create": QuizSerializer,
+        #     "partial_update": QuizSerializer,
     }
+    pagination_class = QuizPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ["title", "content"]
+    filterset_fields = ["unit__category__version", "unit__name", "unit__category__main_category__name"]
     permission_classes = [IsAuthenticated, IsCategorySubscriber]
 
-    def retrieve(self, request, *args, **kwargs):
-        user = request.user
-        id = kwargs.get("pk")
-        category_name = request.query_params.get("categoryName")
 
-        # 데이터베이스에서 직접 랜덤 퀴즈를 선택 (PostgreSQL의 경우)
-        other_quizzes = (
-            Quiz.objects.filter(unit__category__main_category__name=category_name)
-            .exclude(id=id)
-            .order_by("?")
-            .select_related("unit")
-            .prefetch_related("photo_set")
-            .first()
-        )
-
-        # 쿼리 결과가 없을 경우 처리
-        if other_quizzes is None:
-            return Response({"detail": "퀴즈가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
-
-        try:
-            # 퀴즈 정보 직렬화
-            random_quiz_data = self.get_serializer(other_quizzes).data
-
-            # 해당 퀴즈가 저장되었는지 확인
-            is_saved = QuizSave.objects.filter(user=user, quiz_id=random_quiz_data["id"]).exists()
-            random_quiz_data["is_saved"] = is_saved
-
-            return Response(random_quiz_data)
-        except Exception as e:
-            # 구체적인 예외 로그 추가 가능
-            print(f"Error serializing quiz: {str(e)}")
-            return Response({"error": "데이터 처리 중 문제가 발생했습니다."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class QuizSaveViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
+# 저장된 퀴즈 - Create, Delete, Retrieve
+class QuizSaveViewSet(
+    ActionBasedViewSetMixin, GenericViewSet, CreateModelMixin, DestroyModelMixin, ListModelMixin, RetrieveModelMixin
+):
     queryset = QuizSave.objects.all()
     serializer_class = QuizSaveSerializer
     serializer_class_map = {"list": QuizListSerializer, "retrieve": QuizDetailSerializer, "create": QuizSaveSerializer}
@@ -86,9 +113,6 @@ class QuizSaveViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         user = request.user
         quiz_id = kwargs.get("pk")
-        # category_name = request.query_params.get("categoryName")
-        # check_object_permissions(self, category_name)
-        # 추가하기
 
         saved_quizzes = list(QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True).order_by("quiz_id"))
 
@@ -114,9 +138,10 @@ class QuizSaveViewSet(ActionBasedViewSetMixin, viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         user = request.user
 
-        saved_quiz_ids = QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True).order_by("id")
-        if not saved_quiz_ids.exists():
-            return Response({"error": "no Data"}, status=status.HTTP_404_NOT_FOUND)
+        saved_quiz_ids = QuizSave.objects.filter(user=user).values_list("quiz_id", flat=True)
+
+        if not saved_quiz_ids:
+            return Response({"error": "No saved quizzes found"}, status=status.HTTP_404_NOT_FOUND)
 
         quiz_list = Quiz.objects.filter(id__in=saved_quiz_ids)
 

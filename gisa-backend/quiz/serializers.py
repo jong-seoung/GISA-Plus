@@ -10,6 +10,7 @@ class UnitSerializer(serializers.ModelSerializer):
         depth = 1
 
 
+# 참고를 위한 Unit 모델 직렬화
 class BasicUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unit
@@ -128,21 +129,17 @@ class QuizListSerializer(serializers.ModelSerializer):
 
 class QuizDetailSerializer(serializers.ModelSerializer):
     unit = UnitSerializer()
-    # unit_list = serializers.ListField(UnitSerializer, read_only=True)
+    is_saved = serializers.SerializerMethodField()
     answer = AnswerSerializer(source="answer_set", many=True)
     image_list = QuizImageSerializer(source="photo_set", many=True)
 
     class Meta:
         model = Quiz
-        fields = ["id", "unit", "image_list", "title", "content", "answer", "unit"]
+        fields = ["id", "unit", "image_list", "title", "content", "answer", "unit", "is_saved"]
 
-    # def get_unit_list():
-    #     pass
-    # 현재 Quiz 모델의 unit 외래키를 가지고 오기
-    # 가지고온 Unit 모델의 name과 category외래키 가지고오기
-    # 가지고온 Category 모델의 version과 Maincategory 외래키 가지고오기
-    # Category 모델에서 maincategory가 Maincategory 인 값들 version 목록 가지고오기
-    # version 별 unit.name 가지고오기
+    def get_is_saved(self, obj):
+        user = self.context["request"].user
+        return QuizSave.objects.filter(user=user, quiz_id=obj.id).exists()
 
     @staticmethod
     def get_optimized_queryset():
