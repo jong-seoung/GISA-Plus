@@ -7,9 +7,6 @@ import { useParams } from "react-router-dom";
 const SAVELIST_REST_API = makeRestApi("quiz/api/save");
 
 function SaveQuizList() {
-  const [{ data: origSaveQuiz = undefined, loading }, refetch] = useApiAxios(
-    "quiz/api/save"
-  );
   const [quiz, setQuiz] = useState([]);
   const navigate = useNavigate();
   const { categoryName } = useParams();

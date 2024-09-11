@@ -1,0 +1,23 @@
+.quiz-card {
+    height: 100%; /* 카드 높이를 일정하게 설정 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .quiz-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 길면 '...' 처리 */
+  }
+  
+  .quiz-content {
+    font-size: 1rem;
+    line-height: 1.5; /* 줄 간격 설정 */
+    max-height: 4.5em; /* 3줄까지만 보이도록 (1.5 * 3 = 4.5em) */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  

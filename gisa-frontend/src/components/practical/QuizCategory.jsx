@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { makeRestApi, useApiAxios } from "../../api";
+import { makeRestApi } from "../../api";
 import {
   ListGroup,
   Button,
@@ -10,16 +10,13 @@ import {
   Form,
   Modal,
 } from "react-bootstrap";
-import CategoryHeader from "../../components/wp/CategoryHeader";
+import CategoryHeader from "../wp/CategoryHeader";
 
-const CategoryList = () => {
+const CategoryList = ({category, refetch}) => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
-  const [{ data: origCategory = undefined, loading }, refetch] =
-    useApiAxios(`quiz/api/category/`);
   const CATEGORY_REST_API = makeRestApi(`/quiz/api/category/`);
   const UNIT_REST_API = makeRestApi(`/quiz/api/unit/`);
-  const [category, setCategory] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -79,18 +76,16 @@ const CategoryList = () => {
     setToDelete(null);
   };
 
-  useEffect(() => {
-    setCategory(origCategory || []);
-  }, [origCategory]);
-
   // 연도 선택 처리
   const handleCategorySelect = categoryId => {
     console.log("선택된 연도 ID:", categoryId);
   };
 
   // 유닛 클릭 시 페이지 이동 처리
-  const handleUnitClick = unitName => {
-    navigate(`/${categoryName}/${unitName}`);
+  const handleUnitClick = (Unitname, CategoryVersion) => {
+    navigate(
+      `/${categoryName}/quiz/manager/${Unitname}/${CategoryVersion}/list`
+    );
   };
 
   const handleEditCategory = categoryItem => {
@@ -156,7 +151,7 @@ const CategoryList = () => {
   return (
     <Container className="mt-4 p-0">
       <Card className="rounded-3 shadow-sm">
-        <CategoryHeader title={`${categoryName} - QuizManager`} />
+        <CategoryHeader title={`Version&Unit`} />
         <ListGroup variant="flush">
           {category.map((categoryItem, index) => (
             <div key={index} className="border-0">
@@ -200,7 +195,12 @@ const CategoryList = () => {
                         >
                           <span
                             style={{ cursor: "pointer" }}
-                            onClick={() => handleUnitClick(unitItem.name)}
+                            onClick={() =>
+                              handleUnitClick(
+                                unitItem.name,
+                                categoryItem.version
+                              )
+                            }
                           >
                             {unitItem.name}
                           </span>
