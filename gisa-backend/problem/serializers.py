@@ -1,3 +1,5 @@
+import random
+
 from problem.models import Problem, ProblemAnswer, ProblemCategory, ProblemPhoto
 from rest_framework import serializers
 
@@ -87,5 +89,6 @@ class ProblemListSerializer(serializers.ModelSerializer):
         return Problem.objects.all().order_by("num")
 
     def get_answer(self, obj):
-        answers = obj.problemanswer_set.order_by("?")
+        answers = list(obj.problemanswer_set.all())
+        random.shuffle(answers)
         return ProblemAnswerSerializer(answers, many=True).data

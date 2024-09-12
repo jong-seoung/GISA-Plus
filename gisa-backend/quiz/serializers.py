@@ -124,7 +124,7 @@ class QuizListSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_optimized_queryset():
-        return Quiz.objects.all()
+        return Quiz.objects.select_related("unit__category").prefetch_related("photo_set").all()
 
 
 class QuizDetailSerializer(serializers.ModelSerializer):
@@ -143,7 +143,7 @@ class QuizDetailSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_optimized_queryset():
-        return Quiz.objects.all().select_related("unit").prefetch_related("photo_set")
+        return Quiz.objects.all().select_related("unit").prefetch_related("photo_set", "answer_set")
 
 
 class QuizSaveSerializer(serializers.ModelSerializer):

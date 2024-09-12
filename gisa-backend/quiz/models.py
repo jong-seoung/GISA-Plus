@@ -48,8 +48,8 @@ class Answer(models.Model):
 
 
 class QuizSave(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="saved_quizzes")
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="saves")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     saved_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

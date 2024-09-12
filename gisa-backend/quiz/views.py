@@ -37,15 +37,15 @@ class UnitViewSet(GenericViewSet, CreateModelMixin, UpdateModelMixin, DestroyMod
     queryset = Unit.objects.all()
     serializer_class = BasicUnitSerializer
 
-    permission_classes = [IsAuthenticated, IsCategorySubscriber]
+    permission_classes = [IsAuthenticated | IsCategorySubscriber]
 
 
 # Category 뷰 - Create, List, Update, Destory
 class CategoryViewSet(GenericViewSet, CreateModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().prefetch_related("category_unit")
     serializer_class = CategorySerializer
 
-    permission_classes = [IsAuthenticated, IsCategorySubscriber]
+    permission_classes = [IsAuthenticated | IsCategorySubscriber]
 
 
 # 데일리 퀴즈
@@ -53,7 +53,7 @@ class QuizlListView(ListAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizDetailSerializer
 
-    permission_classes = [IsAuthenticated, IsCategorySubscriber]
+    permission_classes = [IsAuthenticated | IsCategorySubscriber]
 
     def list(self, request, *args, **kwargs):
         request.user
@@ -63,7 +63,11 @@ class QuizlListView(ListAPIView):
         if not category_name:
             return Response({"error": "categoryName parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        quiz = Quiz.objects.filter(unit__category__main_category__name=category_name).exclude(id=exclude_id)
+        quiz = (
+            Quiz.objects.filter(unit__category__main_category__name=category_name)
+            .select_related("unit")
+            .exclude(id=exclude_id)
+        )
 
         count = quiz.count()
 
@@ -98,10 +102,10 @@ class QuizModelViewSet(ActionBasedViewSetMixin, ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ["title", "content"]
     filterset_fields = ["unit__category__version", "unit__name", "unit__category__main_category__name"]
-    permission_classes = [IsAuthenticated, IsCategorySubscriber]
+    permission_classes = [IsAuthenticated | IsCategorySubscriber]
 
 
-# 저장된 퀴즈 - Create, Delete, Retrieve
+# 저장된 퀴즈 - Create, Delete, Retrieve, List
 class QuizSaveViewSet(
     ActionBasedViewSetMixin, GenericViewSet, CreateModelMixin, DestroyModelMixin, ListModelMixin, RetrieveModelMixin
 ):
@@ -130,8 +134,6 @@ class QuizSaveViewSet(
         response_data = serializer.data
         response_data["prev_quiz_url"] = f"/save/{prev_quiz_id}/" if prev_quiz_id else None
         response_data["next_quiz_url"] = f"/save/{next_quiz_id}/" if next_quiz_id else None
-        is_saved = QuizSave.objects.filter(user=user, quiz_id=quiz_id).exists()
-        response_data["is_saved"] = is_saved
 
         return Response(response_data)
 
@@ -143,7 +145,9 @@ class QuizSaveViewSet(
         if not saved_quiz_ids:
             return Response({"error": "No saved quizzes found"}, status=status.HTTP_404_NOT_FOUND)
 
-        quiz_list = Quiz.objects.filter(id__in=saved_quiz_ids)
+        quiz_list = (
+            Quiz.objects.filter(id__in=saved_quiz_ids).select_related("unit__category").prefetch_related("photo_set")
+        )
 
         serializer = self.get_serializer(quiz_list, many=True)
         return Response(serializer.data)
