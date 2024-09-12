@@ -9,7 +9,7 @@ import ProblemInputModal from "../../components/writing/ProblemInputModal";
 const ProblemList = () => {
   const { categoryName, version } = useParams();
   const [{ data: origProblem = undefined }] = useApiAxios(
-    `problem/api/problem?categoryName=${categoryName}&version=${version}`
+    `problem/api/problem/?categoryName=${categoryName}&version=${version}`
   );
   const PROBLEM_REST_API = makeRestApi(`/problem/api/problem/`);
 
