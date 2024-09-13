@@ -1,0 +1,30 @@
+/* Footer.css */
+
+/* 화면이 크거나 페이지가 짧을 때에도 푸터가 하단에 고정되도록 설정 */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* 본문(content)의 최소 높이를 전체 화면으로 맞추기 */
+  .main-content {
+    flex: 1; /* 본문이 채울 수 있는 모든 공간을 차지하도록 설정 */
+  }
+  
+  /* 푸터를 페이지 하단에 고정 */
+  .footer {
+    background-color: #f1f1f1;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+  }
+  

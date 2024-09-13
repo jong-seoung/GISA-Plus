@@ -2,7 +2,12 @@ import { NavLink, useParams } from "react-router-dom";
 import { Alert, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 
 import { useApiAxios } from "../../api";
-import { LOGOUT_URL } from "../../constants";
+import {
+  LOGIN_URL,
+  LOGOUT_URL,
+  SIGNUP_URL,
+  PROFILE_URL,
+} from "../../constants";
 import { useStatusContext } from "../../contexts/StatusContext";
 
 // Alert 컴포넌트의 variant 속성
@@ -19,6 +24,7 @@ function TopNav() {
   const {
     is_authenticated = null,
     username = "",
+    managed = [],
     messages = [],
   } = useStatusContext();
 
@@ -54,21 +60,27 @@ function TopNav() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto" variant="underline">
-              <Nav.Link to={`${categoryName}/`} as={NavLink}>
-                {categoryName}
-              </Nav.Link>
-              <Nav.Link to={`${categoryName}/problem`} as={NavLink}>
-                필기 기출
-              </Nav.Link>
-              <Nav.Link to={`${categoryName}/실기`} as={NavLink}>
-                실기 복원
-              </Nav.Link>
-              <Nav.Link to={`${categoryName}/daily`} as={NavLink}>
-                데일리
-              </Nav.Link>
-              <Nav.Link to={`${categoryName}/save`} as={NavLink}>
-                오답노트
-              </Nav.Link>
+              {categoryName == undefined ? (
+                ""
+              ) : (
+                <>
+                  <Nav.Link to={`${categoryName}/`} as={NavLink}>
+                    {categoryName}
+                  </Nav.Link>
+                  <Nav.Link to={`${categoryName}/problem`} as={NavLink}>
+                    필기 기출
+                  </Nav.Link>
+                  <Nav.Link to={`${categoryName}/실기`} as={NavLink}>
+                    실기 복원
+                  </Nav.Link>
+                  <Nav.Link to={`${categoryName}/daily`} as={NavLink}>
+                    데일리
+                  </Nav.Link>
+                  <Nav.Link to={`${categoryName}/save`} as={NavLink}>
+                    오답노트
+                  </Nav.Link>
+                </>
+              )}
               {is_authenticated !== null && (
                 <NavDropdown
                   title={is_authenticated ? `${username}의 계정` : "계정"}
@@ -76,17 +88,17 @@ function TopNav() {
                 >
                   {!is_authenticated && (
                     <>
-                      <NavDropdown.Item to="/login" as={NavLink}>
+                      <NavDropdown.Item to={LOGIN_URL} as={NavLink}>
                         로그인
                       </NavDropdown.Item>
-                      <NavDropdown.Item to="/signup" as={NavLink}>
+                      <NavDropdown.Item to={SIGNUP_URL} as={NavLink}>
                         회원가입
                       </NavDropdown.Item>
                     </>
                   )}
                   {is_authenticated && (
                     <>
-                      <NavDropdown.Item to="/profile" as={NavLink}>
+                      <NavDropdown.Item to={PROFILE_URL} as={NavLink}>
                         프로필
                       </NavDropdown.Item>
                       <NavDropdown.Divider />
@@ -101,13 +113,13 @@ function TopNav() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      {is_authenticated !== null && (
+      {/* {is_authenticated !== null && (
         <Container>
           <Alert variant="info" className="mt-2">
-            Your username is <strong>{username}</strong>.
+            Your username is <strong>{username}{managed}</strong>.
           </Alert>
         </Container>
-      )}
+      )} */}
 
       {messages.length > 0 && (
         <Container>

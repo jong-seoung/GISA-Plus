@@ -12,9 +12,9 @@ const axiosInstance = Axios.create({
   baseURL: API_HOST,
   timeout: API_TIMEOUT,
   withCredentials: API_WITH_CREDENTIALS,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -48,7 +48,17 @@ axiosInstance.interceptors.response.use(
           </ul>
         </>,
       );
-    } else if (error.code === "ERR_CANCELED") {
+    } else if (error.response?.status === 403){
+      const errorMessages = error.response.data.detail;
+      if (errorMessages === "자격 인증데이터(authentication credentials)가 제공되지 않았습니다."){
+        const next_url = window.location.href;
+        window.location.href = `${LOGIN_URL}?next=${next_url}`;
+      } else if (errorMessages === "결제 페이지로 이동"){
+        console.log("결제 페이지로 이동");
+      }
+      console.log(errorMessages);
+    } 
+    else if (error.code === "ERR_CANCELED") {
       // 요청이 취소되었을 때
       /* skip */
     } else if (error.code === "ERR_NETWORK") {

@@ -27,14 +27,14 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     executeLogin({ data: formData });
   };
 
   useEffect(() => {
     if (response && response.status === 200) {
-        window.location.href = '/'
+      window.location.href = "/";
     }
   }, [response]);
 
@@ -43,6 +43,11 @@ const LoginPage = () => {
       navigate("/");
     }
   }, [is_authenticated, navigate]);
+
+    // 회원 관리 페이지로 이동
+    const handleSignup = () => {
+      navigate("/signup"); 
+    };
 
   return (
     <Container className="mt-5" style={{ maxWidth: "400px" }}>
@@ -74,16 +79,25 @@ const LoginPage = () => {
             onChange={handleChange}
           />
         </Form.Group>
+        <div>
+          <Button
+            variant="outline-primary"
+            type="submit"
+            className="mt-3 w-100"
+            block
+            disabled={loading}
+          >
+            {loading ? "로그인 중..." : "로그인"}
+          </Button>
 
-        <Button
-          variant="primary"
-          type="submit"
-          className="mt-3"
-          block
-          disabled={loading}
-        >
-          {loading ? "로그인 중..." : "로그인"}
-        </Button>
+          <Button
+            variant="outline-success"
+            className="mt-3 w-100"
+            onClick={handleSignup} // 회원가입 버튼 클릭 시 handleSignup 함수 실행
+          >
+            회원가입
+          </Button>
+        </div>
       </Form>
     </Container>
   );

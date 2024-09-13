@@ -5,8 +5,11 @@ import { useNavigate } from "react-router-dom";
 import SearchBar from "../../components/gisa/SearchBar";
 import CategoryItem from "../../components/gisa/CategoryItem";
 
+// 임시 권한
+import { makeRestApi } from "../../api";
+
 function CategoryList() {
-  const [{ data: origCategoryList = undefined, loading, error: loadingError }, refetch] = useApiAxios("/quiz/category-list");
+  const [{ data: origCategoryList = undefined, loading, error: loadingError }, refetch] = useApiAxios("/core/category-list");
   const [categoryList, setCategoryList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -17,6 +20,9 @@ function CategoryList() {
   }, [origCategoryList]);
 
   const handleClick = (categoryName) => {
+    // 임시 권한
+    const Permisson_REST_API = makeRestApi(`/core/temporary-permission/?categoryName=${categoryName}`);
+    Permisson_REST_API.create({});
     navigate(`/${categoryName}/`);
   };
 

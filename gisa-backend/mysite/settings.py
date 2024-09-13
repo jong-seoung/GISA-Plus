@@ -36,7 +36,6 @@ else:
 SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
@@ -46,9 +45,9 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 # Application definition
 
-third_apps = ["rest_framework", "corsheaders", "django_extensions"]
+third_apps = ["rest_framework", "corsheaders", "django_extensions", "django_filters"]
 
-local_apps = ["accounts", "quiz", "problem", "restore"]
+local_apps = ["accounts", "core", "quiz", "problem", "restore", "payment"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -97,6 +96,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "mysite.wsgi.application"
+
+
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
 
 # Database
@@ -172,3 +174,8 @@ SUCCESS_URL_ALLOWED_HOSTS = set(env.list("SUCCESS_URL_ALLOWED_HOSTS", default=se
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 CORS_ALLOW_CREDENTIALS = env.bool("CORS_ALLOW_CREDENTIALS", default=False)
 SESSION_COOKIE_DOMAIN = env.str("SESSION_COOKIE_DOMAIN", default=None) or None
+
+# PortOne
+# https://portone.io/korea/ko
+IAMPORT_API_KEY = env.str("IAMPORT_API_KEY")
+IAMPORT_API_SECRET = env.str("IAMPORT_API_SECRET")

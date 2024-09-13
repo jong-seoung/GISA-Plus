@@ -1,22 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useApiAxios, makeRestApi } from "../../api";
-import { useParams } from "react-router-dom";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import QuizHeader from "../../components/practical/QuizHeader";
 import QuizImage from "../../components/practical/Image";
-import QuizContent from "../../components/practical/QuizContent";
+import QuizTitle from "../../components/practical/QuizTitle";
+import QuizContent from "../../components/practical/RestoreContent";
 import QuizAnswers from "../../components/practical/Answers";
 import NextButton from "../../components/practical/NextButton";
+import { useStatusContext } from "../../contexts/StatusContext";
 
 const SAVE_REST_API = makeRestApi("quiz/api/save/");
 
 function DailyQuiz() {
+  const navigate = useNavigate();
   const { categoryName } = useParams();
   const [{ data: origQuiz = undefined, loading }, refetch] = useApiAxios(
-    `quiz/api/post/0?categoryName=${categoryName}`
+    `quiz/api/quiz/list/?categoryName=${categoryName}`
   );
+
   const [quiz, setQuiz] = useState([]);
   const [showAnswers, setShowAnswers] = useState(false);
+  const { managed = [undefined] } = useStatusContext();
+
+  const isManager = managed.includes(categoryName);
+
 
   useEffect(() => {
     setShowAnswers(false);
@@ -51,12 +59,16 @@ function DailyQuiz() {
 
   const handleNextPage = () => {
     refetch({
-      url: `quiz/api/post/${quiz.id}?categoryName=${categoryName}`,
+      url: `quiz/api/quiz/list/?categoryName=${categoryName}&exclude_id=${quiz.id}`,
       method: "GET",
     });
   };
 
-  if (loading || !quiz || !quiz.unit || !quiz.unit.category) {
+  const pageChange = () => {
+    navigate(`/${categoryName}/quiz/manager`);
+  };
+
+  if (loading || !quiz || !quiz.unit || !quiz) {
     return <p></p>;
   }
 
@@ -75,19 +87,23 @@ function DailyQuiz() {
                     version={quiz.unit.category.version}
                   />
 
-                  <QuizContent
-                    title={quiz.title}
-                    content={quiz.content}
-                    imageExists={quiz.image_list && quiz.image_list.length > 0}
-                  />
+                  <QuizTitle title={quiz.title} />
+                  {isManager && (
+                    <div className="mb-3">
+                      <Button
+                        variant="outline-success"
+                        size="sm"
+                        className="me-2"
+                        onClick={() => pageChange()}
+                      >
+                        관리 페이지
+                      </Button>
+                    </div>
+                  )}
 
-                  <QuizImage
-                    imageUrl={
-                      quiz.image_list && quiz.image_list.length > 0
-                        ? quiz.image_list[0].image
-                        : null
-                    }
-                  />
+                  <QuizImage restoreItem={quiz} />
+
+                  <QuizContent content={quiz.content} />
 
                   <QuizAnswers
                     answers={quiz.answer}

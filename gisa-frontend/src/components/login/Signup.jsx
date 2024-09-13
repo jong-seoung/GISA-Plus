@@ -56,7 +56,7 @@ const SignupPage = () => {
       <h2 className="text-center">회원가입</h2>
       {successMessage && (
         <Alert variant="success">
-          {successMessage}, 자동 로그인 됩니다.
+          {successMessage} 자동 로그인 됩니다.
         </Alert>
       )}
       {error && (
@@ -81,11 +81,11 @@ const SignupPage = () => {
         </Form.Group>
 
         <Form.Group controlId="formUsername" className="mt-3">
-          <Form.Label>사용자 이름</Form.Label>
+          <Form.Label>아이디</Form.Label>
           <Form.Control
             type="text"
             name="username"
-            placeholder="사용자 이름 입력"
+            placeholder="아이디 입력"
             value={formData.username}
             onChange={handleChange}
             isInvalid={!!errors.username}

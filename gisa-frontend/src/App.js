@@ -14,8 +14,17 @@ import SaveListQuiz from "./pages/saveQuiz/SaveListQuiz";
 import SaveDetailQuiz from "./pages/saveQuiz/SaveDetailQuiz";
 import CategoryList from "./pages/category/CategoryList";
 import CategoryDetail from "./pages/category/CategoryDetail";
-import Test from "./components/create/RestoreCreate";
+import CategoryManager from "./pages/dailyQuiz/QuizManager";
+import Footer from "./components/navbar/Footer";
 
+const NotFound = () => {
+  return (
+    <div>
+      <h1>404</h1>
+      <p>페이지를 찾을 수 없습니다.</p>
+    </div>
+  );
+};
 
 const router = createBrowserRouter([
   {
@@ -26,9 +35,11 @@ const router = createBrowserRouter([
         <Container>
           <Outlet />
         </Container>
+        <Footer />
       </>
     ),
     children: [
+      { path: "*", element: <NotFound /> },
       { path: "", element: <CategoryList /> },
       { path: "login", element: <Login /> },
       { path: "signup", element: <Signup /> },
@@ -43,8 +54,7 @@ const router = createBrowserRouter([
       { path: ":categoryName/problem/:version", element: <ProblemDetail /> },
       { path: ":categoryName/실기/", element: <RestoreList /> },
       { path: ":categoryName/실기/:version", element: <RestoreDetial /> },
-      // { path: ":categoryName/실기/:version", element: <Test2 /> },
-      { path: "test", element: < Test/>},
+      { path: ":categoryName/quiz/manager", element: <CategoryManager /> },
     ],
   },
 ]);

@@ -6,7 +6,7 @@ const AnswerButton = ({ showAnswer, onClick }) => (
     {showAnswer ? (
       <Button className="invisible">""</Button>
     ) : (
-      <Button variant="success" onClick={onClick}>
+      <Button variant="outline-success" onClick={onClick}>
         정답 보기
       </Button>
     )}

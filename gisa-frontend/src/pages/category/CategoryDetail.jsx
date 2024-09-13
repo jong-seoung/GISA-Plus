@@ -17,6 +17,7 @@ function CategoryDetail() {
             text="필기 기출문제들을 풀어보세요."
             link="problem"
             buttonText="기출 문제 보기"
+            variant="outline-primary"
           />
         </Col>
         <Col md={3}>
@@ -25,6 +26,7 @@ function CategoryDetail() {
             text="실기 복원 문제들을 풀어보세요."
             link="실기"
             buttonText="복원 문제 보기"
+            variant="outline-primary"
           />
         </Col>
         <Col md={3}>
@@ -33,6 +35,7 @@ function CategoryDetail() {
             text="매일 새로운 문제로 실력을 쌓으세요."
             link="daily"
             buttonText="데일리 문제 풀기"
+            variant="outline-primary"
           />
         </Col>
         <Col md={3}>
@@ -41,6 +44,7 @@ function CategoryDetail() {
             text="틀렸던 문제를 저장하고 다시 풀어보세요."
             link="save"
             buttonText="저장된 문제 풀기"
+            variant="outline-primary"
           />
         </Col>
       </Row>

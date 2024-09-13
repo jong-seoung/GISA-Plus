@@ -3,7 +3,7 @@ from typing import List
 from uuid import uuid4
 
 from accounts.models import User
-from core.models import TimeStampedModel
+from core.models import MainCategory, TimeStampedModel
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.db import models
@@ -14,11 +14,11 @@ from PIL import Image
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    main_category = models.ForeignKey(MainCategory, on_delete=models.CASCADE, related_name="quiz_categories")
     version = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.name} - {self.version}"
+        return f"{self.main_category.name} - {self.version}"
 
 
 class Unit(models.Model):
@@ -26,7 +26,7 @@ class Unit(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
-        return f"{self.category.name} - {self.name}"
+        return f"{self.category.main_category.name} - {self.category.version} - {self.name}"
 
 
 class Quiz(TimeStampedModel):
@@ -40,7 +40,7 @@ class Quiz(TimeStampedModel):
 
 class Answer(models.Model):
     num = models.SmallIntegerField()
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -48,8 +48,8 @@ class Answer(models.Model):
 
 
 class QuizSave(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="saved_quizzes")
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="saves")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     saved_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
