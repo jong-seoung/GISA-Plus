@@ -50,7 +50,7 @@ const ProblemCard = ({
             problemItem.image_list.map((imageItem, index) => (
               <img
                 key={index}
-                src={imageItem.image}
+                src={`http://localhost:8000${imageItem.image}`}
                 alt={`이미지 ${index}`}
                 style={{
                   width: "100%",

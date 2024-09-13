@@ -113,13 +113,13 @@ function TopNav() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      {is_authenticated !== null && (
+      {/* {is_authenticated !== null && (
         <Container>
           <Alert variant="info" className="mt-2">
             Your username is <strong>{username}{managed}</strong>.
           </Alert>
         </Container>
-      )}
+      )} */}
 
       {messages.length > 0 && (
         <Container>

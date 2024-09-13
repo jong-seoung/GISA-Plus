@@ -140,7 +140,7 @@ const QuizList = ({ category }) => {
     setShowEditModal(true);
   };
 
-  const handleEdit = async (quiz) => {
+  const handleEdit = async quiz => {
     console.log(quiz.id);
     const { data } = await Quiz_REST_API.detail(quiz.id);
     console.log(data);
@@ -153,7 +153,7 @@ const QuizList = ({ category }) => {
     if (window.confirm(`'${QuizToDelete.title}'를 삭제하시겠습니까?`)) {
       const { data, response } = await Quiz_REST_API.delete(QuizToDelete.id);
       if (response?.status === 204) {
-        console.log("삭제 완료");
+        window.location.reload();
       }
     }
   };
@@ -279,14 +279,6 @@ const QuizList = ({ category }) => {
                   <Accordion.Body>
                     {item.content}
                     <br />
-                    <Button
-                      variant="outline-success"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => handleAdd()}
-                    >
-                      추가
-                    </Button>
                     <EditButtons onEdit={() => handleEdit(item)} />
                     <DeleteButtons onDelete={() => handleDelete(item)} />
                   </Accordion.Body>
@@ -313,6 +305,14 @@ const QuizList = ({ category }) => {
             )}
           </div>
         </Card.Body>
+        <Button
+          variant="outline-success"
+          size="sm"
+          className="me-2"
+          onClick={() => handleAdd()}
+        >
+          추가
+        </Button>
       </Card>
       <QuizInputModal
         show={showEditModal}

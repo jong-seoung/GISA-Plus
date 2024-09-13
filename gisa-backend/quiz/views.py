@@ -89,7 +89,7 @@ class QuizModelViewSet(ActionBasedViewSetMixin, ModelViewSet):
         "retrieve": QuizDetailSerializer.get_optimized_queryset(),
         #     "partial_update": QuizSerializer.get_optimized_queryset(),
         "list": QuizListSerializer.get_optimized_queryset(),
-        #     "destroy": Quiz.objects.all(),
+        "destroy": Quiz.objects.all(),
     }
     serializer_class = QuizSerializer
     serializer_class_map = {

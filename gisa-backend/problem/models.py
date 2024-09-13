@@ -22,7 +22,7 @@ class ProblemCategory(models.Model):
 
 class Problem(models.Model):
     num = models.SmallIntegerField()
-    title = models.CharField(max_length=100)
+    title = models.CharField()
     correct_rate = models.SmallIntegerField()
     category = models.ForeignKey(ProblemCategory, on_delete=models.CASCADE, related_name="category_problem")
 
