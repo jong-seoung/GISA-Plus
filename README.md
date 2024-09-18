@@ -23,12 +23,12 @@ Gisa_Plus는 기술기사 자격증 문제를 다루는 플랫폼입니다. 사�
 
 <details>
   <summary>필기 기출 문제 풀이</summary>
-  <img src="gisa-backend/mediafiles/gif/필기기출풀이.gif" alt="필기 기출 문제 풀이 GIF" />
+  <img src="gisa-backend/gif/필기기출풀이.gif" alt="필기 기출 문제 풀이 GIF" />
 </details>
 
 <details>
   <summary>실기 복원 문제 풀이</summary>
-  <img src="gisa-backend/mediafiles/gif/실기복원문제.gif" alt="실기 복원 문제 풀이 GIF" />
+  <img src="gisa-backend/gif/실기복원문제.gif" alt="실기 복원 문제 풀이 GIF" />
 </details>
 
 <details>
