@@ -50,6 +50,7 @@ Gisa_Plus는 기술기사 자격증 문제를 다루는 플랫폼입니다. 사�
 
 <details>
   <summary>결제</summary>
+  <img src="https://github.com/user-attachments/assets/6da34746-510c-40c6-b17b-172c6b395891" alt="결제 페이지" />
 </details>
 
 <br/>
