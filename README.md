@@ -6,40 +6,39 @@ Gisa_Plus는 기술기사 자격증 문제를 다루는 플랫폼입니다. 사�
 
 ## 📌 기능
 
-
 <details>
   <summary>회원 가입</summary>
-  <img src="https://github.com/user-attachments/assets/ea2f6e0c-9650-4c63-a383-3de0f2345b3a" alt="회원 가입 GIF" />
+  <img src="https://github.com/user-attachments/assets/32848e85-d791-4379-9804-4c9b3152426f" alt="회원 가입 GIF" />
 </details>
 
 <details>
   <summary>로그인&로그아웃</summary>
-  <img src="https://github.com/user-attachments/assets/e268ca18-018d-46b5-ad2c-cf5e3d88e244" alt="로그인&로그아웃 GIF" />
+  <img src="https://github.com/user-attachments/assets/f35a8b15-2bcc-45a5-b46e-9d235cb4cd8c" alt="로그인&로그아웃 GIF" />
 </details>
 
 <details>
   <summary>로그인이 안되어 있으면 로그인 페이지로 이동</summary>
-  <img src="https://github.com/user-attachments/assets/72800551-df0d-49e8-9f86-c0cf1dd162c7" alt="로그인 페이지 이동 GIF" />
+  <img src="https://github.com/user-attachments/assets/4a4425ae-f51f-41d0-a92f-f1a4f8b21d81" alt="로그인 페이지 이동 GIF" />
 </details>
 
 <details>
   <summary>필기 기출 문제 풀이</summary>
-  <img src="https://github.com/user-attachments/assets/ceec753c-60fb-4bd9-a613-09115bd4b13e" alt="필기 기출 문제 풀이 GIF" />
+  <img src="gisa-backend/mediafiles/gif/필기기출풀이.gif" alt="필기 기출 문제 풀이 GIF" />
 </details>
 
 <details>
   <summary>실기 복원 문제 풀이</summary>
-  <img src="https://github.com/user-attachments/assets/a46e44b3-7600-48f0-b0d6-7fd42e3eac45" alt="실기 복원 문제 풀이 GIF" />
+  <img src="gisa-backend/mediafiles/gif/실기복원문제.gif" alt="실기 복원 문제 풀이 GIF" />
 </details>
 
 <details>
   <summary>데일리 문제 풀이</summary>
-  <img src="https://github.com/user-attachments/assets/185ed608-b02b-46bb-98d5-563802c7a5d3" alt="데일리 문제 풀이 GIF" />
+  <img src="https://github.com/user-attachments/assets/685ed547-aa5a-42ab-a9e8-64451c2b9d24" alt="데일리 문제 풀이 GIF" />
 </details>
 
 <details>
   <summary>문제 저장</summary>
-  <img src="https://github.com/user-attachments/assets/d38d0e64-626d-4fa1-8d31-414f31621978" alt="문제 저장 GIF" />
+  <img src="https://github.com/user-attachments/assets/919da08b-a932-4491-9df5-e8a3f1efabf4" alt="문제 저장 GIF" />
 </details>
 
 <details>
@@ -53,7 +52,6 @@ Gisa_Plus는 기술기사 자격증 문제를 다루는 플랫폼입니다. 사�
   <summary>결제</summary>
 </details>
 
-
 <br/>
 
 ## 사용 기술 스택
@@ -63,7 +61,7 @@ Gisa_Plus는 기술기사 자격증 문제를 다루는 플랫폼입니다. 사�
 | **프론트엔드** | JavaScript, React, bootstrap, HTML, CSS |
 | **백엔드**     | Django, Django Rest Framework           |
 | **DB**         | PostgreSQL                              |
-| **Infra**      | AWS, Route 53, SSL                      |
+| **Infra**      | AWS (Lightsail)                         |
 | **API**        | Portone API                             |
 
 <br/>
